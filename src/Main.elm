@@ -1,7 +1,7 @@
 module Main exposing (main)
 
-import Pomodoro exposing (init, view, update)
 import Html
+import Pomodoro exposing (init, subscriptions, update, view)
 
 
 main =
@@ -9,5 +9,5 @@ main =
         { init = init
         , view = view
         , update = update
-        , subscriptions = \a -> Sub.none
+        , subscriptions = subscriptions
         }

@@ -5,6 +5,7 @@ import Test exposing (..)
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (text)
 import Expect
+import Time
 
 
 all : Test
@@ -16,12 +17,12 @@ all =
                     view unstartedPomodoro
                         |> Query.fromHtml
                         |> Query.has [ text "Pomodoro" ]
-            , test "displays an unstarted timer" <|
+            , test "displays an unstarted Pomodoro" <|
                 \() ->
                     view unstartedPomodoro
                         |> Query.fromHtml
                         |> Query.has [ text "--:--" ]
-            , test "displays an started timer" <|
+            , test "displays a running Pomodoro" <|
                 \() ->
                     view (runningPomodoro (toTimeRemaining 18 27))
                         |> Query.fromHtml
@@ -40,12 +41,44 @@ all =
             , describe "counts a Pomodoro down"
                 [ test "when it is a fresh Pomodoro" <|
                     \() ->
-                        update Tick (freshPomodoro)
+                        update tick (freshPomodoro)
                             |> Expect.equal ( (runningPomodoro (toTimeRemaining 24 59)), Cmd.none )
                 , test "when it is a running Pomodoro" <|
                     \() ->
-                        update Tick (runningPomodoro (toTimeRemaining 18 27))
+                        update tick (runningPomodoro (toTimeRemaining 18 27))
                             |> Expect.equal ( (runningPomodoro (toTimeRemaining 18 26)), Cmd.none )
                 ]
+            ]
+        , describe "subscriptions"
+            [ test "does nothing for an unstarted Pomodoro" <|
+                \() ->
+                    subscriptions unstartedPomodoro
+                        |> Expect.equal Sub.none
+            , test "emits Tick every second for a running Pomodoro" <|
+                \() ->
+                    subscriptions freshPomodoro
+                        |> Expect.equal (Time.every Time.second Tick)
+            ]
+        , describe "formatting"
+            [ test "formats unstarted Pomodoro" <|
+                \() ->
+                    formatPomodoro unstartedPomodoro
+                        |> Expect.equal "--:--"
+            , test "formats a fresh Pomodoro" <|
+                \() ->
+                    formatPomodoro freshPomodoro
+                        |> Expect.equal "25:00"
+            , test "formats a started Pomodoro" <|
+                \() ->
+                    formatPomodoro (runningPomodoro (toTimeRemaining 18 27))
+                        |> Expect.equal "18:27"
+            , test "formats another started Pomodoro" <|
+                \() ->
+                    formatPomodoro (runningPomodoro (toTimeRemaining 8 7))
+                        |> Expect.equal "08:07"
+            , test "formats a finished Pomodoro" <|
+                \() ->
+                    formatPomodoro (runningPomodoro (toTimeRemaining 0 0))
+                        |> Expect.equal "00:00"
             ]
         ]

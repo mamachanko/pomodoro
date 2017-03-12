@@ -1,7 +1,8 @@
 module Pomodoro exposing (..)
 
 import Date exposing (toTime)
-import Html exposing (Html, div, text)
+import Html exposing (Html, div, td, text)
+import Html.Events exposing (onClick)
 import Time
 
 
@@ -40,7 +41,12 @@ runningPomodoro timeRemaining =
 
 type Action
     = StartPomodoro
-    | Tick
+    | Tick Time.Time
+
+
+tick : Action
+tick =
+    Tick Time.second
 
 
 startPomodoro =
@@ -49,7 +55,7 @@ startPomodoro =
 
 view : Model -> Html Action
 view model =
-    div []
+    div [ onClick StartPomodoro ]
         [ text "Pomodoro"
         , div
             []
@@ -74,16 +80,33 @@ formatTimeRemaining timeRemaining =
 
 formatMinutes : TimeRemaining -> String
 formatMinutes timeRemaining =
-    toString <|
-        truncate <|
-            Time.inMinutes timeRemaining
+    let
+        minutes =
+            truncate (Time.inMinutes timeRemaining)
+    in
+        if minutes == 0 then
+            "00"
+        else if minutes < 10 then
+            "0" ++ toString minutes
+        else
+            toString minutes
 
 
 formatSeconds : TimeRemaining -> String
 formatSeconds timeRemaining =
-    toString <|
-        (truncate timeRemaining)
-            % (truncate (Time.second * 60))
+    let
+        seconds =
+            Time.inSeconds <|
+                toFloat <|
+                    (truncate timeRemaining)
+                        % (truncate Time.minute)
+    in
+        if seconds == 0 then
+            "00"
+        else if seconds < 10 then
+            "0" ++ toString seconds
+        else
+            toString seconds
 
 
 init =
@@ -96,10 +119,20 @@ update action model =
         StartPomodoro ->
             ( freshPomodoro, Cmd.none )
 
-        Tick ->
+        Tick time ->
             case model of
                 UnstartedPomodoro ->
                     ( unstartedPomodoro, Cmd.none )
 
                 RunningPomodoro timeRemaining ->
                     ( runningPomodoro (timeRemaining - Time.second), Cmd.none )
+
+
+subscriptions : Model -> Sub Action
+subscriptions model =
+    case model of
+        UnstartedPomodoro ->
+            Sub.none
+
+        RunningPomodoro _ ->
+            Time.every Time.second Tick

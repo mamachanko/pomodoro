@@ -13,19 +13,39 @@ all =
         [ describe "view"
             [ test "displays a message" <|
                 \() ->
-                    view Nothing
+                    view unstartedPomodoro
                         |> Query.fromHtml
                         |> Query.has [ text "Pomodoro" ]
-            ]
-        , describe "model"
-            [ test "initialises as empty String with no Cmd" <|
+            , test "displays an unstarted timer" <|
                 \() ->
-                    init |> Expect.equal ( "", Cmd.none )
+                    view unstartedPomodoro
+                        |> Query.fromHtml
+                        |> Query.has [ text "--:--" ]
+            , test "displays an started timer" <|
+                \() ->
+                    view (runningPomodoro (toTimeRemaining 18 27))
+                        |> Query.fromHtml
+                        |> Query.has [ text "18:27" ]
+            ]
+        , describe "init"
+            [ test "initialises as unstarted Pomodoro" <|
+                \() ->
+                    init |> Expect.equal ( unstartedPomodoro, Cmd.none )
             ]
         , describe "update"
-            [ test "does nothing to the model" <|
+            [ test "starts a Pomodoro" <|
                 \() ->
-                    update noAction ""
-                        |> Expect.equal ( "", Cmd.none )
+                    update StartPomodoro unstartedPomodoro
+                        |> Expect.equal ( freshPomodoro, Cmd.none )
+            , describe "counts a Pomodoro down"
+                [ test "when it is a fresh Pomodoro" <|
+                    \() ->
+                        update Tick (freshPomodoro)
+                            |> Expect.equal ( (runningPomodoro (toTimeRemaining 24 59)), Cmd.none )
+                , test "when it is a running Pomodoro" <|
+                    \() ->
+                        update Tick (runningPomodoro (toTimeRemaining 18 27))
+                            |> Expect.equal ( (runningPomodoro (toTimeRemaining 18 26)), Cmd.none )
+                ]
             ]
         ]

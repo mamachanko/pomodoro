@@ -1,0 +1,10 @@
+---
+applications:
+  - name: Pomodoro
+    mem: 64M
+    buildpack: staticfile_buildpack
+    path: dist/
+    routes:
+      - route: pomodoro.cfapps.io
+    env:
+      FORCE_HTTPS: true

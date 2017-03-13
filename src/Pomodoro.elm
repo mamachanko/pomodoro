@@ -70,7 +70,11 @@ formatPomodoro model =
             "--:--"
 
         RunningPomodoro timeRemaining ->
+          if timeRemaining >= 0 then
             formatTimeRemaining timeRemaining
+          else
+            "-" ++ (formatTimeRemaining (abs timeRemaining))
+
 
 
 formatTimeRemaining : TimeRemaining -> String

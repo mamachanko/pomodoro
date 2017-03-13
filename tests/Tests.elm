@@ -47,6 +47,14 @@ all =
                     \() ->
                         update tick (runningPomodoro (toTimeRemaining 18 27))
                             |> Expect.equal ( (runningPomodoro (toTimeRemaining 18 26)), Cmd.none )
+                , test "when the Pomodoro is up" <|
+                    \() ->
+                        update tick (runningPomodoro (toTimeRemaining 0 0))
+                            |> Expect.equal ( (runningPomodoro (toTimeRemaining 0 -1)), Cmd.none )
+                , test "when the Pomodoro up beyond a minute" <|
+                    \() ->
+                        update tick (runningPomodoro (toTimeRemaining 0 -59))
+                            |> Expect.equal ( (runningPomodoro (toTimeRemaining -1 0)), Cmd.none )
                 ]
             ]
         , describe "subscriptions"
@@ -60,7 +68,7 @@ all =
                         |> Expect.equal (Time.every Time.second Tick)
             ]
         , describe "formatting"
-            [ test "formats unstarted Pomodoro" <|
+            [ test "formats an unstarted Pomodoro" <|
                 \() ->
                     formatPomodoro unstartedPomodoro
                         |> Expect.equal "--:--"
@@ -80,5 +88,9 @@ all =
                 \() ->
                     formatPomodoro (runningPomodoro (toTimeRemaining 0 0))
                         |> Expect.equal "00:00"
+            , test "formats a finished Pomodoro beyond 00:00" <|
+                \() ->
+                    formatPomodoro (runningPomodoro (toTimeRemaining -2 -5))
+                        |> Expect.equal "-02:05"
             ]
         ]

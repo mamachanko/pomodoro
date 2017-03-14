@@ -3,7 +3,7 @@ module Tests exposing (..)
 import Pomodoro exposing (..)
 import Test exposing (..)
 import Test.Html.Query as Query
-import Test.Html.Selector exposing (text)
+import Test.Html.Selector exposing (text, tag, boolAttribute)
 import Expect
 import Time
 
@@ -27,6 +27,21 @@ all =
                     view (runningPomodoro (toTimeRemaining 18 27))
                         |> Query.fromHtml
                         |> Query.has [ text "18:27" ]
+            , test "plays no sound while Pomodoro is running" <|
+                \() ->
+                    view (runningPomodoro (toTimeRemaining 12 34))
+                        |> Query.fromHtml
+                        |> Query.findAll [ tag "audio" ]
+                        |> Query.count (Expect.equal 0)
+            , test "plays sound when Pomodoro is up" <|
+                \() ->
+                    view (runningPomodoro (toTimeRemaining 0 0))
+                        |> Query.fromHtml
+                        |> Query.findAll
+                            [ tag "audio"
+                            , boolAttribute "autoplay" True
+                            ]
+                        |> Query.count (Expect.equal 1)
             ]
         , describe "init"
             [ test "initialises as unstarted Pomodoro" <|

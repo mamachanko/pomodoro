@@ -1,9 +1,15 @@
 module Pomodoro exposing (..)
 
 import Date exposing (toTime)
-import Html exposing (Html, div, td, text)
+import Html exposing (Html, div, td, text, audio, source)
+import Html.Attributes exposing (autoplay, src, type_)
 import Html.Events exposing (onClick)
 import Time
+
+
+soundFile : String
+soundFile =
+    "https://archive.org/download/carlosnochi_yahoo_Beep/beep.mp3"
 
 
 type alias TimeRemaining =
@@ -59,8 +65,25 @@ view model =
         [ text "Pomodoro"
         , div
             []
-            [ text (formatPomodoro model) ]
+            [ text (formatPomodoro model)
+            , playSound model
+            ]
         ]
+
+
+playSound : Model -> Html Action
+playSound model =
+    case model of
+        UnstartedPomodoro ->
+            div [] []
+
+        RunningPomodoro timeRemaining ->
+            if timeRemaining <= 0 then
+                audio
+                    [ autoplay True ]
+                    [ source [ type_ "audio/mp3", src soundFile ] [] ]
+            else
+                div [] []
 
 
 formatPomodoro : Model -> String
@@ -70,11 +93,10 @@ formatPomodoro model =
             "--:--"
 
         RunningPomodoro timeRemaining ->
-          if timeRemaining >= 0 then
-            formatTimeRemaining timeRemaining
-          else
-            "-" ++ (formatTimeRemaining (abs timeRemaining))
-
+            if timeRemaining >= 0 then
+                formatTimeRemaining timeRemaining
+            else
+                "-" ++ (formatTimeRemaining (abs timeRemaining))
 
 
 formatTimeRemaining : TimeRemaining -> String

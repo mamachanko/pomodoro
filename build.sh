@@ -4,5 +4,7 @@ rm -rf dist/
 
 elm make \
   --yes \
-  --output dist/index.html \
-  src/Main.elm
+  --output dist/elm.js \
+  src/Pomodoro.elm
+
+cp src/static/* ./dist

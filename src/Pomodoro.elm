@@ -1,7 +1,8 @@
 module Pomodoro exposing (..)
 
+import Sound exposing (playSound)
 import Date exposing (toTime)
-import Html exposing (Html, div, td, text, audio, source)
+import Html exposing (Html, div, td, text, audio, source, program)
 import Html.Attributes exposing (autoplay, src, type_)
 import Html.Events exposing (onClick)
 import Time
@@ -65,25 +66,8 @@ view model =
         [ text "Pomodoro"
         , div
             []
-            [ text (formatPomodoro model)
-            , playSound model
-            ]
+            [ text (formatPomodoro model) ]
         ]
-
-
-playSound : Model -> Html Action
-playSound model =
-    case model of
-        UnstartedPomodoro ->
-            div [] []
-
-        RunningPomodoro timeRemaining ->
-            if timeRemaining <= 0 then
-                audio
-                    [ autoplay True ]
-                    [ source [ type_ "audio/mp3", src soundFile ] [] ]
-            else
-                div [] []
 
 
 formatPomodoro : Model -> String
@@ -151,7 +135,21 @@ update action model =
                     ( unstartedPomodoro, Cmd.none )
 
                 RunningPomodoro timeRemaining ->
-                    ( runningPomodoro (timeRemaining - Time.second), Cmd.none )
+                    updateRunningPomodoro model timeRemaining
+
+
+updateRunningPomodoro model timeRemaining =
+    let
+        newTimeRemaining =
+            (timeRemaining - Time.second)
+
+        newRunningPomodoro =
+            runningPomodoro newTimeRemaining
+    in
+        if newTimeRemaining == (toTimeRemaining 0 0) then
+            ( newRunningPomodoro, playSound "" )
+        else
+            ( newRunningPomodoro, Cmd.none )
 
 
 subscriptions : Model -> Sub Action
@@ -162,3 +160,12 @@ subscriptions model =
 
         RunningPomodoro _ ->
             Time.every Time.second Tick
+
+
+main =
+    program
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = subscriptions
+        }

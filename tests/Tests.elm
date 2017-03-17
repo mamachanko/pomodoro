@@ -1,6 +1,7 @@
 module Tests exposing (..)
 
 import Pomodoro exposing (..)
+import Sound exposing (playSound)
 import Test exposing (..)
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (text, tag, boolAttribute)
@@ -27,21 +28,6 @@ all =
                     view (runningPomodoro (toTimeRemaining 18 27))
                         |> Query.fromHtml
                         |> Query.has [ text "18:27" ]
-            , test "plays no sound while Pomodoro is running" <|
-                \() ->
-                    view (runningPomodoro (toTimeRemaining 12 34))
-                        |> Query.fromHtml
-                        |> Query.findAll [ tag "audio" ]
-                        |> Query.count (Expect.equal 0)
-            , test "plays sound when Pomodoro is up" <|
-                \() ->
-                    view (runningPomodoro (toTimeRemaining 0 0))
-                        |> Query.fromHtml
-                        |> Query.findAll
-                            [ tag "audio"
-                            , boolAttribute "autoplay" True
-                            ]
-                        |> Query.count (Expect.equal 1)
             ]
         , describe "init"
             [ test "initialises as unstarted Pomodoro" <|
@@ -64,9 +50,9 @@ all =
                             |> Expect.equal ( (runningPomodoro (toTimeRemaining 18 26)), Cmd.none )
                 , test "when the Pomodoro is up" <|
                     \() ->
-                        update tick (runningPomodoro (toTimeRemaining 0 0))
-                            |> Expect.equal ( (runningPomodoro (toTimeRemaining 0 -1)), Cmd.none )
-                , test "when the Pomodoro up beyond a minute" <|
+                        update tick (runningPomodoro (toTimeRemaining 0 1))
+                            |> Expect.equal ( (runningPomodoro (toTimeRemaining 0 0)), playSound "" )
+                , test "when the Pomodoro is up beyond a minute" <|
                     \() ->
                         update tick (runningPomodoro (toTimeRemaining 0 -59))
                             |> Expect.equal ( (runningPomodoro (toTimeRemaining -1 0)), Cmd.none )

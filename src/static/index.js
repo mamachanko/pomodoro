@@ -2,11 +2,9 @@ console.log("Pomodoro");
 
 var Pomodoro = Elm.Pomodoro.fullscreen();
 
-var sound = new Howl({
-  src: ['beep.mp3']
-});
-
-Pomodoro.ports.playSound.subscribe(function(x){
-  console.log("playing sound");
-  sound.play();
+Pomodoro.ports.playSound.subscribe(function(soundFile){
+  console.log("playing sound: " + soundFile);
+  new Howl({
+    src: [soundFile]
+  }).play();
 });

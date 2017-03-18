@@ -1,16 +1,11 @@
 module Pomodoro exposing (..)
 
-import Sound exposing (playSound)
+import Sound exposing (ringBell)
 import Date exposing (toTime)
 import Html exposing (Html, div, td, text, audio, source, program)
 import Html.Attributes exposing (autoplay, src, type_)
 import Html.Events exposing (onClick)
 import Time
-
-
-soundFile : String
-soundFile =
-    "https://archive.org/download/carlosnochi_yahoo_Beep/beep.mp3"
 
 
 type alias TimeRemaining =
@@ -147,7 +142,7 @@ updateRunningPomodoro model timeRemaining =
             runningPomodoro newTimeRemaining
     in
         if newTimeRemaining == (toTimeRemaining 0 0) then
-            ( newRunningPomodoro, playSound "" )
+            ( newRunningPomodoro, ringBell )
         else
             ( newRunningPomodoro, Cmd.none )
 

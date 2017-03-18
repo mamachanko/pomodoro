@@ -1,7 +1,9 @@
 module UpdateTests exposing (..)
 
-import Pomodoro exposing (..)
+import Update exposing (update)
+import Model exposing (..)
 import Sound exposing (..)
+import Time
 import Test exposing (..)
 import Expect
 
@@ -17,18 +19,18 @@ describeUpdate =
             [ test "when it is a fresh Pomodoro" <|
                 \() ->
                     update tick (freshPomodoro)
-                        |> Expect.equal ( (runningPomodoro (toTimeRemaining 24 59)), Cmd.none )
+                        |> Expect.equal ( (activePomodoro (Time.minute * 24 + Time.second * 59)), Cmd.none )
             , test "when it is a running Pomodoro" <|
                 \() ->
-                    update tick (runningPomodoro (toTimeRemaining 18 27))
-                        |> Expect.equal ( (runningPomodoro (toTimeRemaining 18 26)), Cmd.none )
+                    update tick (activePomodoro (Time.minute * 18 + Time.second * 27))
+                        |> Expect.equal ( (activePomodoro (Time.minute * 18 + Time.second * 26)), Cmd.none )
             , test "when the Pomodoro is up" <|
                 \() ->
-                    update tick (runningPomodoro (toTimeRemaining 0 1))
-                        |> Expect.equal ( (runningPomodoro (toTimeRemaining 0 0)), ringBell )
+                    update tick (activePomodoro (Time.second * 1))
+                        |> Expect.equal ( activePomodoro 0, ringBell )
             , test "when the Pomodoro is up beyond a minute" <|
                 \() ->
-                    update tick (runningPomodoro (toTimeRemaining 0 -59))
-                        |> Expect.equal ( (runningPomodoro (toTimeRemaining -1 0)), Cmd.none )
+                    update tick (activePomodoro (Time.second * -59))
+                        |> Expect.equal ( (activePomodoro (Time.minute * -1)), Cmd.none )
             ]
         ]

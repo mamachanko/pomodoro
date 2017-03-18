@@ -1,6 +1,8 @@
 module FormattingTests exposing (..)
 
-import Pomodoro exposing (..)
+import Format exposing (formatTime)
+import Model exposing (..)
+import Time
 import Expect
 import Test exposing (..)
 
@@ -8,28 +10,20 @@ import Test exposing (..)
 describeFormatting : Test
 describeFormatting =
     describe "formatting"
-        [ test "formats an unstarted Pomodoro" <|
+        [ test "formats time" <|
             \() ->
-                formatPomodoro unstartedPomodoro
-                    |> Expect.equal "25:00"
-        , test "formats a fresh Pomodoro" <|
-            \() ->
-                formatPomodoro freshPomodoro
-                    |> Expect.equal "25:00"
-        , test "formats a started Pomodoro" <|
-            \() ->
-                formatPomodoro (runningPomodoro (toTimeRemaining 18 27))
+                formatTime ((Time.minute * 18) + (Time.second * 27))
                     |> Expect.equal "18:27"
-        , test "formats another started Pomodoro" <|
+        , test "formats more time" <|
             \() ->
-                formatPomodoro (runningPomodoro (toTimeRemaining 8 7))
+                formatTime ((Time.minute * 8) + (Time.second * 7))
                     |> Expect.equal "08:07"
-        , test "formats a finished Pomodoro" <|
+        , test "formats zero time" <|
             \() ->
-                formatPomodoro (runningPomodoro (toTimeRemaining 0 0))
+                formatTime 0
                     |> Expect.equal "00:00"
-        , test "formats a finished Pomodoro beyond 00:00" <|
+        , test "formats negative time" <|
             \() ->
-                formatPomodoro (runningPomodoro (toTimeRemaining -2 -5))
+                formatTime ((Time.minute * -2) + (Time.second * -5))
                     |> Expect.equal "-02:05"
         ]

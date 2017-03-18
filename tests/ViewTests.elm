@@ -1,9 +1,15 @@
 module ViewTests exposing (..)
 
+import View exposing (view)
+import Model exposing (Model)
+import Time
 import Test exposing (..)
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (text, tag, attribute)
-import Pomodoro exposing (..)
+
+
+aSession =
+    (Model.Active Model.Pomodoro (Time.minute * 12 + Time.second * 34))
 
 
 describeView : Test
@@ -11,22 +17,17 @@ describeView =
     describe "view"
         [ test "displays a message" <|
             \() ->
-                view unstartedPomodoro
+                view aSession
                     |> Query.fromHtml
                     |> Query.has [ text "Pomodoro" ]
-        , test "displays an unstarted Pomodoro" <|
+        , test "displays a session" <|
             \() ->
-                view unstartedPomodoro
+                view aSession
                     |> Query.fromHtml
-                    |> Query.has [ text (formatPomodoro unstartedPomodoro) ]
-        , test "displays a running Pomodoro" <|
-            \() ->
-                view (runningPomodoro (toTimeRemaining 18 27))
-                    |> Query.fromHtml
-                    |> Query.has [ text "18:27" ]
+                    |> Query.has [ text ("12:34") ]
         , test "displays a button to start a Pomodoro" <|
             \() ->
-                view (unstartedPomodoro)
+                view aSession
                     |> Query.fromHtml
                     |> Query.find [ tag "button" ]
                     |> Query.has [ text "Pomodoro" ]

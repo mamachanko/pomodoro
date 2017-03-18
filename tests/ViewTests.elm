@@ -5,7 +5,7 @@ import Model exposing (Model)
 import Time
 import Test exposing (..)
 import Test.Html.Query as Query
-import Test.Html.Selector exposing (text, tag, attribute)
+import Test.Html.Selector exposing (text, tag, id)
 
 
 aSession =
@@ -29,6 +29,12 @@ describeView =
             \() ->
                 view aSession
                     |> Query.fromHtml
-                    |> Query.find [ tag "button" ]
+                    |> Query.find [ tag "button", id "startPomodoro" ]
                     |> Query.has [ text "Pomodoro" ]
+        , test "displays a button to start a short break" <|
+            \() ->
+                view aSession
+                    |> Query.fromHtml
+                    |> Query.find [ tag "button", id "startShortBreak" ]
+                    |> Query.has [ text "Short break" ]
         ]

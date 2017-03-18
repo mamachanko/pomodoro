@@ -3,17 +3,31 @@ module View exposing (view)
 import Model exposing (..)
 import Format exposing (formatTime)
 import Html exposing (Html, div, td, text, audio, source, button)
+import Html.Attributes exposing (id)
 import Html.Events exposing (onClick)
 
 
 view : Model -> Html Action
 view model =
-    div [ onClick StartPomodoro ]
+    div []
         [ text "Pomodoro"
         , div
             []
             [ div [] [ text (formatSession model) ]
-            , div [] [ button [ onClick StartPomodoro ] [ text "Pomodoro" ] ]
+            , div []
+                [ button
+                    [ id "startPomodoro"
+                    , onClick StartPomodoro
+                    ]
+                    [ text "Pomodoro" ]
+                ]
+            , div []
+                [ button
+                    [ id "startShortBreak"
+                    , onClick StartShortBreak
+                    ]
+                    [ text "Short break" ]
+                ]
             ]
         ]
 
@@ -21,8 +35,8 @@ view model =
 formatSession : Model -> String
 formatSession model =
     case model of
-        Active _ remainder ->
-            formatTime remainder
+        Active _ time ->
+            formatTime time
 
-        Inactive _ remainder ->
-            formatTime remainder
+        Inactive _ time ->
+            formatTime time

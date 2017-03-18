@@ -11,24 +11,34 @@ update action model =
         StartPomodoro ->
             ( freshPomodoro, Cmd.none )
 
+        StartShortBreak ->
+            ( freshShortBreak, Cmd.none )
+
         Tick time ->
             case model of
                 Inactive _ _ ->
-                    ( unstartedPomodoro, Cmd.none )
+                    ( model, Cmd.none )
 
-                Active _ remainder ->
-                    updateActiveSession model remainder
+                Active session remainder ->
+                    updateActiveSession session remainder
 
 
-updateActiveSession model timeRemaining =
+updateActiveSession session timeRemaining =
     let
         newRemainder =
-            (timeRemaining - Time.second)
+            countDown timeRemaining
+
+        cmd =
+            if newRemainder == 0 then
+                ringBell
+            else
+                Cmd.none
 
         newActiveSession =
-            activePomodoro newRemainder
+            Active session newRemainder
     in
-        if newRemainder == 0 then
-            ( newActiveSession, ringBell )
-        else
-            ( newActiveSession, Cmd.none )
+        ( newActiveSession, cmd )
+
+
+countDown =
+    (+) (Time.second * -1)

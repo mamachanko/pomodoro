@@ -11,7 +11,7 @@ describeFormatting =
         [ test "formats an unstarted Pomodoro" <|
             \() ->
                 formatPomodoro unstartedPomodoro
-                    |> Expect.equal "--:--"
+                    |> Expect.equal "25:00"
         , test "formats a fresh Pomodoro" <|
             \() ->
                 formatPomodoro freshPomodoro

@@ -69,7 +69,7 @@ formatPomodoro : Model -> String
 formatPomodoro model =
     case model of
         UnstartedPomodoro ->
-            "--:--"
+            formatTimeRemaining fullPomodoro
 
         RunningPomodoro timeRemaining ->
             if timeRemaining >= 0 then

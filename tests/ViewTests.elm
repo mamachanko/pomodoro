@@ -18,7 +18,7 @@ describeView =
             \() ->
                 view unstartedPomodoro
                     |> Query.fromHtml
-                    |> Query.has [ text "--:--" ]
+                    |> Query.has [ text (formatPomodoro unstartedPomodoro) ]
         , test "displays a running Pomodoro" <|
             \() ->
                 view (runningPomodoro (toTimeRemaining 18 27))

@@ -2,7 +2,7 @@ module Pomodoro exposing (..)
 
 import Sound exposing (ringBell)
 import Date exposing (toTime)
-import Html exposing (Html, div, td, text, audio, source, program)
+import Html exposing (Html, div, td, text, audio, source, program, button)
 import Html.Attributes exposing (autoplay, src, type_)
 import Html.Events exposing (onClick)
 import Time
@@ -61,7 +61,9 @@ view model =
         [ text "Pomodoro"
         , div
             []
-            [ text (formatPomodoro model) ]
+            [ div [] [ text (formatPomodoro model) ]
+            , div [] [ button [ onClick StartPomodoro ] [ text "Pomodoro" ] ]
+            ]
         ]
 
 

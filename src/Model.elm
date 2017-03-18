@@ -8,6 +8,7 @@ module Model
         , activePomodoro
         , freshPomodoro
         , freshShortBreak
+        , freshLongBreak
         )
 
 import Time
@@ -21,6 +22,7 @@ type Model
 type Session
     = Pomodoro
     | ShortBreak
+    | LongBreak
 
 
 type alias Remainder =
@@ -30,6 +32,7 @@ type alias Remainder =
 type Action
     = StartPomodoro
     | StartShortBreak
+    | StartLongBreak
     | Tick Time.Time
 
 
@@ -41,6 +44,11 @@ fullPomodoro =
 fullShortBreak : Remainder
 fullShortBreak =
     Time.minute * 5
+
+
+fullLongBreak : Remainder
+fullLongBreak =
+    Time.minute * 20
 
 
 unstartedPomodoro =
@@ -55,6 +63,11 @@ freshPomodoro =
 freshShortBreak : Model
 freshShortBreak =
     Active ShortBreak fullShortBreak
+
+
+freshLongBreak : Model
+freshLongBreak =
+    Active LongBreak fullLongBreak
 
 
 activePomodoro : Remainder -> Model

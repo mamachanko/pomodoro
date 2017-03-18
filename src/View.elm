@@ -28,6 +28,13 @@ view model =
                     ]
                     [ text "Short break" ]
                 ]
+            , div []
+                [ button
+                    [ id "startLongBreak"
+                    , onClick StartLongBreak
+                    ]
+                    [ text "Long break" ]
+                ]
             ]
         ]
 

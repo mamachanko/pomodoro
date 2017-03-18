@@ -37,4 +37,10 @@ describeView =
                     |> Query.fromHtml
                     |> Query.find [ tag "button", id "startShortBreak" ]
                     |> Query.has [ text "Short break" ]
+        , test "displays a button to start a long break" <|
+            \() ->
+                view aSession
+                    |> Query.fromHtml
+                    |> Query.find [ tag "button", id "startLongBreak" ]
+                    |> Query.has [ text "Long break" ]
         ]

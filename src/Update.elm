@@ -14,6 +14,9 @@ update action model =
         StartShortBreak ->
             ( freshShortBreak, Cmd.none )
 
+        StartLongBreak ->
+            ( freshLongBreak, Cmd.none )
+
         Tick time ->
             case model of
                 Inactive _ _ ->

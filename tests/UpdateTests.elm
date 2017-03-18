@@ -19,6 +19,10 @@ describeUpdate =
             \() ->
                 update StartShortBreak unstartedPomodoro
                     |> Expect.equal ( freshShortBreak, Cmd.none )
+        , test "starts a long break" <|
+            \() ->
+                update StartLongBreak unstartedPomodoro
+                    |> Expect.equal ( freshLongBreak, Cmd.none )
         , describe "counts an active session down"
             [ test "when it is a fresh session" <|
                 \() ->

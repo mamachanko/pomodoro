@@ -2,33 +2,36 @@ module View exposing (view)
 
 import Model exposing (..)
 import Format exposing (formatTime)
-import Html exposing (Html, div, td, text, audio, source, button)
+import Html exposing (Html, div, td, text, audio, source, button, h1)
 import Html.Attributes exposing (id)
 import Html.Events exposing (onClick)
 
 
 view : Model -> Html Action
 view model =
-    div []
+    div [ id "pomodoro" ]
         [ header
-        , div
-            []
-            [ timer model
-            , pomodoroButton
-            , shortBreakButton
-            , longBreakButton
-            , counter model
-            , message model
-            ]
+        , timer model
+        , counter model
+        , controls
+        , message model
         ]
 
 
 header =
-    div [ id "header" ] [ text "Pomodoro" ]
+    h1 [ id "header" ] [ text "Pomodoro" ]
 
 
 timer model =
     div [ id "timer" ] [ text (formatSession model) ]
+
+
+controls =
+    div [ id "controls" ]
+        [ pomodoroButton
+        , shortBreakButton
+        , longBreakButton
+        ]
 
 
 counter model =

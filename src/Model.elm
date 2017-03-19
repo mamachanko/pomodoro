@@ -5,6 +5,8 @@ module Model
         , Session(..)
         , tick
         , unstartedPomodoro
+        , unstartedShortBreak
+        , unstartedLongBreak
         , activePomodoro
         , freshPomodoro
         , freshShortBreak
@@ -17,6 +19,7 @@ import Time
 type Model
     = Active Session Remainder
     | Inactive Session Remainder
+    | Over Session Overflow
 
 
 type Session
@@ -26,7 +29,11 @@ type Session
 
 
 type alias Remainder =
-    Float
+    Time.Time
+
+
+type alias Overflow =
+    Time.Time
 
 
 type Action
@@ -53,6 +60,14 @@ fullLongBreak =
 
 unstartedPomodoro =
     Inactive Pomodoro fullPomodoro
+
+
+unstartedShortBreak =
+    Inactive ShortBreak fullShortBreak
+
+
+unstartedLongBreak =
+    Inactive LongBreak fullLongBreak
 
 
 freshPomodoro : Model

@@ -1,14 +1,17 @@
 module Subscriptions exposing (subscriptions)
 
-import Model
-import Time
+import Model exposing (Model(Inactive, Active, Over), Action(Tick))
+import Time exposing (every, second)
 
 
 subscriptions : Model.Model -> Sub Model.Action
 subscriptions model =
     case model of
-        Model.Inactive _ _ ->
+        Inactive _ _ ->
             Sub.none
 
-        Model.Active _ _ ->
-            Time.every Time.second Model.Tick
+        Active _ _ ->
+            every second Tick
+
+        Over _ _ ->
+            every second Tick

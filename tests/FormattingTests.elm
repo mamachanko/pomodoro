@@ -22,8 +22,4 @@ describeFormatting =
             \() ->
                 formatTime 0
                     |> Expect.equal "00:00"
-        , test "formats negative time" <|
-            \() ->
-                formatTime ((Time.minute * -2) + (Time.second * -5))
-                    |> Expect.equal "-02:05"
         ]

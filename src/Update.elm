@@ -25,23 +25,24 @@ update action model =
                 Active session remainder ->
                     updateActiveSession session remainder
 
+                Over session overflow ->
+                    ( Over session (countUp overflow), Cmd.none )
 
-updateActiveSession session timeRemaining =
+
+updateActiveSession session remainder =
     let
         newRemainder =
-            countDown timeRemaining
-
-        cmd =
-            if newRemainder == 0 then
-                ringBell
-            else
-                Cmd.none
-
-        newActiveSession =
-            Active session newRemainder
+            countDown remainder
     in
-        ( newActiveSession, cmd )
+        if (newRemainder == 0) then
+            ( Over session 0, ringBell )
+        else
+            ( Active session newRemainder, Cmd.none )
 
 
 countDown =
     (+) (Time.second * -1)
+
+
+countUp =
+    (+) Time.second

@@ -47,3 +47,6 @@ formatSession model =
 
         Inactive _ time ->
             formatTime time
+
+        Over _ time ->
+            "-" ++ (formatTime time)

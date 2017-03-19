@@ -14,8 +14,12 @@ describeSubscriptions =
             \() ->
                 subscriptions unstartedPomodoro
                     |> Expect.equal Sub.none
-        , test "emits Tick every second for a running Pomodoro" <|
+        , test "emits Tick every second for an active session" <|
             \() ->
-                subscriptions (freshPomodoro)
+                subscriptions freshPomodoro
+                    |> Expect.equal (Time.every Time.second Tick)
+        , test "emits Tick every second for a sessions running over" <|
+            \() ->
+                subscriptions (Over Pomodoro (Time.second * 45))
                     |> Expect.equal (Time.every Time.second Tick)
         ]

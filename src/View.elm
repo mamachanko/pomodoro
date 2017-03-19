@@ -5,6 +5,8 @@ import Format exposing (formatTime)
 import Html exposing (Html, div, td, text, audio, source, button, h1)
 import Html.Attributes exposing (id)
 import Html.Events exposing (onClick)
+import FontAwesome
+import Color
 
 
 view : Model -> Html Action
@@ -19,7 +21,7 @@ view model =
 
 
 header =
-    h1 [ id "header" ] [ text "Pomodoro" ]
+    h1 [ id "header" ] [ FontAwesome.clock_o Color.black 50 ]
 
 
 timer model =
@@ -35,7 +37,11 @@ controls =
 
 
 counter model =
-    div [ id "counter" ] [ text ("Pomodoros: " ++ toString model.pomodoroCount) ]
+    div [ id "counter" ]
+        [ FontAwesome.dot_circle_o Color.black 20
+        , FontAwesome.times Color.black 20
+        , text (toString model.pomodoroCount)
+        ]
 
 
 message { currentSession } =

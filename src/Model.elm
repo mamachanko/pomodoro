@@ -20,11 +20,11 @@ import Time
 
 init : Model
 init =
-    { currentSession = unstartedPomodoro, pomodoroCount = 0 }
+    { currentSession = unstartedPomodoro, pastSessions = [] }
 
 
 type alias Model =
-    { currentSession : Session, pomodoroCount : Int }
+    { currentSession : Session, pastSessions : List SessionType }
 
 
 type Session

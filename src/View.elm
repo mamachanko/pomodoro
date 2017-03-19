@@ -32,7 +32,7 @@ timer model =
 
 
 counter model =
-    div [ id "counter" ] [ text ("Pomodoros: " ++ toString model.pomodoroCount) ]
+    div [ id "counter" ] [ text ("Pomodoros: " ++ (toString model.pastSessions)) ]
 
 
 message { currentSession } =

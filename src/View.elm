@@ -17,6 +17,7 @@ view model =
             , pomodoroButton
             , shortBreakButton
             , longBreakButton
+            , counter model
             , message model
             ]
         ]
@@ -30,8 +31,12 @@ timer model =
     div [ id "timer" ] [ text (formatSession model) ]
 
 
-message model =
-    case model of
+counter model =
+    div [ id "counter" ] [ text ("Pomodoros: " ++ toString model.pomodoroCount) ]
+
+
+message { currentSession } =
+    case currentSession of
         Active _ _ ->
             text ""
 
@@ -82,8 +87,8 @@ longBreakButton =
 
 
 formatSession : Model -> String
-formatSession model =
-    case model of
+formatSession { currentSession } =
+    case currentSession of
         Active _ time ->
             formatTime time
 

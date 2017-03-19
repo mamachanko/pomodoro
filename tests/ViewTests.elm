@@ -1,7 +1,7 @@
 module ViewTests exposing (..)
 
 import Expect
-import Model exposing (Model(Active, Inactive, Over), Session(Pomodoro, ShortBreak, LongBreak))
+import Model exposing (Model, Session(..), SessionType(..))
 import Test exposing (..)
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (id, tag, text)
@@ -10,15 +10,33 @@ import View exposing (view)
 
 
 anActiveSession =
-    (Active Pomodoro (Time.minute * 12 + Time.second * 34))
+    { currentSession = (Active Pomodoro (Time.minute * 12 + Time.second * 34))
+    , pomodoroCount = 12
+    }
 
 
 anInactiveSession =
-    (Inactive Pomodoro (Time.minute * 12 + Time.second * 34))
+    { currentSession = (Inactive Pomodoro (Time.minute * 12 + Time.second * 34))
+    , pomodoroCount = 12
+    }
 
 
-anOverflowingSession =
-    (Over Pomodoro (Time.minute * 12 + Time.second * 34))
+anOverflowingPomodoro =
+    { currentSession = (Over Pomodoro (Time.minute * 12 + Time.second * 34))
+    , pomodoroCount = 12
+    }
+
+
+anOverflowingShortBreak =
+    { currentSession = (Over ShortBreak (Time.minute * 12 + Time.second * 34))
+    , pomodoroCount = 12
+    }
+
+
+anOverflowingLongBreak =
+    { currentSession = (Over LongBreak (Time.minute * 12 + Time.second * 34))
+    , pomodoroCount = 12
+    }
 
 
 describeView : Test
@@ -45,10 +63,18 @@ describeView =
                         |> Query.has [ text ("12:34") ]
             , test "displays an overflowing session" <|
                 \() ->
-                    view anOverflowingSession
+                    view anOverflowingPomodoro
                         |> Query.fromHtml
                         |> Query.find [ id "timer" ]
                         |> Query.has [ text ("-12:34") ]
+            ]
+        , describe "pomodoro counter"
+            [ test "displays the number of Pomodoros done" <|
+                \() ->
+                    view anActiveSession
+                        |> Query.fromHtml
+                        |> Query.find [ id "counter" ]
+                        |> Query.has [ text ("12") ]
             ]
         , describe "message"
             [ test "displays no message for an active session" <|
@@ -65,19 +91,19 @@ describeView =
                         |> Query.count (Expect.equal 0)
             , test "displays a message for an overflowing Pomodoro" <|
                 \() ->
-                    view (Over Pomodoro 123)
+                    view anOverflowingPomodoro
                         |> Query.fromHtml
                         |> Query.find [ id "message" ]
                         |> Query.has [ text "It's break-y time" ]
             , test "displays a message for an overflowing short break" <|
                 \() ->
-                    view (Over ShortBreak 123)
+                    view anOverflowingShortBreak
                         |> Query.fromHtml
                         |> Query.find [ id "message" ]
                         |> Query.has [ text "Ora di pomodoro!" ]
             , test "displays a message for an overflowing long break" <|
                 \() ->
-                    view (Over LongBreak 123)
+                    view anOverflowingLongBreak
                         |> Query.fromHtml
                         |> Query.find [ id "message" ]
                         |> Query.has [ text "Ora di pomodoro!" ]

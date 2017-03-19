@@ -9,35 +9,42 @@ update : Action -> Model -> ( Model, Cmd Action )
 update action model =
     case action of
         StartPomodoro ->
-            ( freshPomodoro, Cmd.none )
+            ( { model | currentSession = freshPomodoro }, Cmd.none )
 
         StartShortBreak ->
-            ( freshShortBreak, Cmd.none )
+            ( { model | currentSession = freshShortBreak }, Cmd.none )
 
         StartLongBreak ->
-            ( freshLongBreak, Cmd.none )
+            ( { model | currentSession = freshLongBreak }, Cmd.none )
 
         Tick time ->
             case model of
-                Inactive _ _ ->
-                    ( model, Cmd.none )
+                { currentSession } ->
+                    case currentSession of
+                        Over sessionType overflow ->
+                            ( { model | currentSession = Over sessionType (countUp overflow) }, Cmd.none )
 
-                Active session remainder ->
-                    updateActiveSession session remainder
+                        Active sessionType remainder ->
+                            updateActiveSession model sessionType remainder
 
-                Over session overflow ->
-                    ( Over session (countUp overflow), Cmd.none )
+                        _ ->
+                            ( model, Cmd.none )
 
 
-updateActiveSession session remainder =
+updateActiveSession model sessionType remainder =
     let
         newRemainder =
             countDown remainder
     in
         if (newRemainder == 0) then
-            ( Over session 0, ringBell )
+            case sessionType of
+                Pomodoro ->
+                    ( { model | currentSession = Over sessionType 0, pomodoroCount = model.pomodoroCount + 1 }, ringBell )
+
+                _ ->
+                    ( { model | currentSession = Over sessionType 0 }, ringBell )
         else
-            ( Active session newRemainder, Cmd.none )
+            ( { model | currentSession = Active sessionType newRemainder }, Cmd.none )
 
 
 countDown =

@@ -34,8 +34,12 @@ controls =
         ]
 
 
-counter model =
-    div [ id "counter" ] [ text ("Pomodoros: " ++ toString model.pomodoroCount) ]
+counter { pastSessions } =
+    div [ id "counter" ]
+        [ text ("Pomodoros: " ++ (toString (countPomodoros pastSessions))) ]
+
+countPomodoros sessions =
+  List.length <| List.filter (\session -> session == Pomodoro) sessions
 
 
 message { currentSession } =

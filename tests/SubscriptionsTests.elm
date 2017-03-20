@@ -7,23 +7,19 @@ import Test exposing (..)
 import Expect
 
 
-withPomodoroCounter session =
-    { currentSession = session, pomodoroCount = 123 }
-
-
 describeSubscriptions : Test
 describeSubscriptions =
     describe "subscriptions"
         [ test "does nothing for an inactive session" <|
             \() ->
-                subscriptions (withPomodoroCounter unstartedPomodoro)
+                subscriptions (Model unstartedPomodoro [])
                     |> Expect.equal Sub.none
         , test "emits Tick every second for an active session" <|
             \() ->
-                subscriptions (withPomodoroCounter freshPomodoro)
+                subscriptions (Model freshPomodoro [])
                     |> Expect.equal (Time.every Time.second Tick)
         , test "emits Tick every second for a sessions running over" <|
             \() ->
-                subscriptions (withPomodoroCounter (Over Pomodoro (Time.second * 45)))
+                subscriptions (Model (Over Pomodoro (Time.second * 45)) [])
                     |> Expect.equal (Time.every Time.second Tick)
         ]

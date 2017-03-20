@@ -37,14 +37,26 @@ updateActiveSession model sessionType remainder =
             countDown remainder
     in
         if (newRemainder == 0) then
-            case sessionType of
-                Pomodoro ->
-                    ( { model | currentSession = Over sessionType 0, pomodoroCount = model.pomodoroCount + 1 }, ringBell )
-
-                _ ->
-                    ( { model | currentSession = Over sessionType 0 }, ringBell )
+            finishedSession model sessionType
         else
-            ( { model | currentSession = Active sessionType newRemainder }, Cmd.none )
+            activeSession model sessionType newRemainder
+
+
+finishedSession model finishedSessionType =
+    ( { model
+        | currentSession = Over finishedSessionType 0
+        , pastSessions = finishedSessionType :: model.pastSessions
+      }
+    , ringBell
+    )
+
+
+activeSession model activeSessionType remainder =
+    ( { model
+        | currentSession = Active activeSessionType remainder
+      }
+    , Cmd.none
+    )
 
 
 countDown =

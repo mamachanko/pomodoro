@@ -65,6 +65,18 @@ describeView =
                         |> Query.fromHtml
                         |> Query.find [ id "message" ]
                         |> Query.has [ text "It's break-y time" ]
+            , test "displays a message for an overflowing Pomodoro after four Pomodoros" <|
+                \() ->
+                    view (Model (Over Pomodoro 0) (List.repeat 4 Pomodoro))
+                        |> Query.fromHtml
+                        |> Query.find [ id "message" ]
+                        |> Query.has [ text "You should take a long break" ]
+            , test "displays a message for an overflowing Pomodoro after eight Pomodoros" <|
+                \() ->
+                    view (Model (Over Pomodoro 0) (List.repeat 8 Pomodoro))
+                        |> Query.fromHtml
+                        |> Query.find [ id "message" ]
+                        |> Query.has [ text "You should take a long break" ]
             , test "displays a message for an overflowing short break" <|
                 \() ->
                     view (Model (Over ShortBreak 0) [])

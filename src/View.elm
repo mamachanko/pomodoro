@@ -42,7 +42,7 @@ countPomodoros sessions =
   List.length <| List.filter (\session -> session == Pomodoro) sessions
 
 
-message { currentSession } =
+message { currentSession, pastSessions } =
     case currentSession of
         Active _ _ ->
             text ""
@@ -51,16 +51,26 @@ message { currentSession } =
             text ""
 
         Over session _ ->
-            overflowMessage session
+            overflowMessage session pastSessions
 
 
-overflowMessage session =
-    case session of
-        Pomodoro ->
-            div [ id "message" ] [ text "It's break-y time!" ]
+overflowMessage session pastSessions =
+    let
+      pomodoroCount =
+        (countPomodoros pastSessions)
 
-        _ ->
-            div [ id "message" ] [ text "Ora di pomodoro!" ]
+      shouldTakeLongBreak =
+        pomodoroCount > 0 && pomodoroCount % 4 == 0
+    in
+      case session of
+          Pomodoro ->
+            if (shouldTakeLongBreak) then
+              div [ id "message" ] [ text "You should take a long break" ]
+            else
+              div [ id "message" ] [ text "It's break-y time!" ]
+
+          _ ->
+              div [ id "message" ] [ text "Ora di pomodoro!" ]
 
 
 pomodoroButton =

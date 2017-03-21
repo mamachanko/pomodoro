@@ -1,7 +1,8 @@
 module Update exposing (update)
 
 import Model exposing (..)
-import Sound exposing (ringBell)
+import Sound
+import Notifications
 import Time
 
 
@@ -9,13 +10,16 @@ update : Action -> Model -> ( Model, Cmd Action )
 update action model =
     case action of
         StartPomodoro ->
-            ( { model | currentSession = freshPomodoro }, Cmd.none )
+            ( { model | currentSession = freshPomodoro }, Notifications.triggerNotification "Pomodoro!" )
 
         StartShortBreak ->
             ( { model | currentSession = freshShortBreak }, Cmd.none )
 
         StartLongBreak ->
             ( { model | currentSession = freshLongBreak }, Cmd.none )
+
+        EnableDesktopNotifications ->
+            ( model, Notifications.enableDesktopNotifications )
 
         Tick time ->
             case model of
@@ -47,7 +51,7 @@ finishedSession model finishedSessionType =
         | currentSession = Over finishedSessionType 0
         , pastSessions = finishedSessionType :: model.pastSessions
       }
-    , ringBell
+    , Sound.ringBell
     )
 
 

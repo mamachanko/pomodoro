@@ -52,6 +52,7 @@ type Action
     | StartShortBreak
     | StartLongBreak
     | Tick Time.Time
+    | EnableDesktopNotifications
 
 
 fullPomodoro : Remainder

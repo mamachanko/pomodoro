@@ -109,5 +109,11 @@ describeView =
                         |> Query.fromHtml
                         |> Query.find [ tag "button", id "startLongBreak" ]
                         |> Query.has [ text "Long break" ]
+            , test "displays a button to enable desktop notifications" <|
+                \() ->
+                    view (Model (Over LongBreak 0) [])
+                        |> Query.fromHtml
+                        |> Query.find [ tag "button", id "enableDesktopNotifications" ]
+                        |> Query.has [ text "Enable desktop notifications" ]
             ]
         ]

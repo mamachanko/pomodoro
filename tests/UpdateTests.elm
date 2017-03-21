@@ -2,7 +2,8 @@ module UpdateTests exposing (..)
 
 import Update exposing (update)
 import Model exposing (..)
-import Sound exposing (..)
+import Notifications
+import Sound
 import Time
 import Test exposing (..)
 import Expect
@@ -27,7 +28,7 @@ describeUpdate =
                     Model (Active Pomodoro (Time.second * 1)) []
                         |> update tick
                         |> Expect.equal
-                            ( Model (Over Pomodoro 0) [ Pomodoro ], ringBell )
+                            ( Model (Over Pomodoro 0) [ Pomodoro ], Sound.ringBell )
             , test "when it is running over" <|
                 \() ->
                     Model (Over Pomodoro 0) []
@@ -56,7 +57,7 @@ describeUpdate =
                         |> update tick
                         |> Expect.equal
                             ( Model (Over ShortBreak 0) [ ShortBreak ]
-                            , ringBell
+                            , Sound.ringBell
                             )
             , test "when it is running over" <|
                 \() ->
@@ -86,7 +87,7 @@ describeUpdate =
                         |> update tick
                         |> Expect.equal
                             ( Model (Over LongBreak 0) [ LongBreak ]
-                            , ringBell
+                            , Sound.ringBell
                             )
             , test "when it is running over" <|
                 \() ->
@@ -98,5 +99,16 @@ describeUpdate =
                     Model (Over LongBreak (Time.second * 59)) []
                         |> update tick
                         |> Expect.equal ( Model (Over LongBreak Time.minute) [], Cmd.none )
+            ]
+        , describe "desktop notifications" <|
+            [ test "requests to permit desktop notifications" <|
+                \() ->
+                    let
+                        anyModel =
+                            Model (Inactive Pomodoro 123) []
+                    in
+                        anyModel
+                            |> update EnableDesktopNotifications
+                            |> Expect.equal ( anyModel, Notifications.enableDesktopNotifications )
             ]
         ]

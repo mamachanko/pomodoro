@@ -1,7 +1,8 @@
 module Update exposing (update)
 
 import Model exposing (..)
-import Sound exposing (ringBell)
+import Sound
+import Notifications
 import Time
 
 
@@ -16,6 +17,9 @@ update action model =
 
         StartLongBreak ->
             ( { model | currentSession = freshLongBreak }, Cmd.none )
+
+        EnableDesktopNotifications ->
+            ( model, Notifications.enableDesktopNotifications )
 
         Tick time ->
             case model of
@@ -43,12 +47,38 @@ updateActiveSession model sessionType remainder =
 
 
 finishedSession model finishedSessionType =
-    ( { model
-        | currentSession = Over finishedSessionType 0
-        , pastSessions = finishedSessionType :: model.pastSessions
-      }
-    , ringBell
-    )
+    let
+        newPastSessions =
+            finishedSessionType :: model.pastSessions
+    in
+        ( { model
+            | currentSession = Over finishedSessionType 0
+            , pastSessions = newPastSessions
+          }
+        , endOfSessionNotification finishedSessionType newPastSessions
+        )
+
+
+endOfSessionNotification sessionType pastSessions =
+    let
+        pomodoroCount =
+            List.length <| List.filter (\session -> session == Pomodoro) pastSessions
+
+        isPomodoroStreak =
+            pomodoroCount > 0 && pomodoroCount % 4 == 0
+    in
+        case sessionType of
+            Pomodoro ->
+                if isPomodoroStreak then
+                    Notifications.notifyEndOfPomodoroStreak
+                else
+                    Notifications.notifyEndOfPomodoro
+
+            ShortBreak ->
+                Notifications.notifyEndOfShortBreak
+
+            LongBreak ->
+                Notifications.notifyEndOfLongBreak
 
 
 activeSession model activeSessionType remainder =

@@ -14,12 +14,16 @@ view model =
         , timer model
         , counter model
         , controls
-        , message model
+        , footer
         ]
 
 
 header =
     h1 [ id "header" ] [ text "Pomodoro" ]
+
+
+footer =
+    div [ id "footer" ] [ enableDesktopNotificationsButton ]
 
 
 timer model =
@@ -32,45 +36,6 @@ controls =
         , shortBreakButton
         , longBreakButton
         ]
-
-
-counter { pastSessions } =
-    div [ id "counter" ]
-        [ text ("Pomodoros: " ++ (toString (countPomodoros pastSessions))) ]
-
-countPomodoros sessions =
-  List.length <| List.filter (\session -> session == Pomodoro) sessions
-
-
-message { currentSession, pastSessions } =
-    case currentSession of
-        Active _ _ ->
-            text ""
-
-        Inactive _ _ ->
-            text ""
-
-        Over session _ ->
-            overflowMessage session pastSessions
-
-
-overflowMessage session pastSessions =
-    let
-      pomodoroCount =
-        (countPomodoros pastSessions)
-
-      shouldTakeLongBreak =
-        pomodoroCount > 0 && pomodoroCount % 4 == 0
-    in
-      case session of
-          Pomodoro ->
-            if (shouldTakeLongBreak) then
-              div [ id "message" ] [ text "You should take a long break" ]
-            else
-              div [ id "message" ] [ text "It's break-y time!" ]
-
-          _ ->
-              div [ id "message" ] [ text "Ora di pomodoro!" ]
 
 
 pomodoroButton =
@@ -100,6 +65,24 @@ longBreakButton =
             , onClick StartLongBreak
             ]
             [ text "Long break" ]
+        ]
+
+
+counter { pastSessions } =
+    div [ id "counter" ]
+        [ text ("Pomodoros: " ++ (toString (countPomodoros pastSessions))) ]
+
+
+countPomodoros sessions =
+    List.length <| List.filter (\session -> session == Pomodoro) sessions
+
+
+enableDesktopNotificationsButton =
+    button
+        [ id "enableDesktopNotifications"
+        , onClick EnableDesktopNotifications
+        ]
+        [ text "Enable desktop notifications"
         ]
 
 

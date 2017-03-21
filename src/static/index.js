@@ -7,6 +7,20 @@ Pomodoro.ports.playSound.subscribe(function(soundFile){
   playSound(soundFile);
 });
 
+Pomodoro.ports.requestPermissions.subscribe(function(){
+  console.log("requesting notification permission");
+  Notification.requestPermission().then(
+      function(permission) {
+        console.log("received permission: " + permission)
+      }
+  );
+});
+
+Pomodoro.ports.triggerNotification.subscribe(function(message){
+  console.log("triggering notification");
+  new Notification(message);
+});
+
 function playSound(soundFile) {
   let playbackCounter = 0;
   let numberOfPlaybacks = 3;

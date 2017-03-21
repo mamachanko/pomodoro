@@ -52,11 +52,12 @@ type Action
     | StartShortBreak
     | StartLongBreak
     | Tick Time.Time
+    | EnableDesktopNotifications
 
 
 fullPomodoro : Remainder
 fullPomodoro =
-    Time.minute * 25
+    Time.second * 2
 
 
 fullShortBreak : Remainder

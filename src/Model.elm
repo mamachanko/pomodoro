@@ -57,7 +57,7 @@ type Action
 
 fullPomodoro : Remainder
 fullPomodoro =
-    Time.second * 2
+    Time.minute * 25
 
 
 fullShortBreak : Remainder

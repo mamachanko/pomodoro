@@ -1,26 +1,11 @@
-module Model
-    exposing
-        ( init
-        , Model
-        , Action(..)
-        , Session(..)
-        , SessionType(..)
-        , tick
-        , unstartedPomodoro
-        , unstartedShortBreak
-        , unstartedLongBreak
-        , activePomodoro
-        , freshPomodoro
-        , freshShortBreak
-        , freshLongBreak
-        )
+module Model exposing (..)
 
 import Time
 
 
-init : Model
-init =
-    { currentSession = unstartedPomodoro, pastSessions = [] }
+initialModel : Model
+initialModel =
+    { currentSession = unstartedPomodoro, pastSessions = noPastSessions }
 
 
 type alias Model =
@@ -80,6 +65,10 @@ unstartedShortBreak =
 
 unstartedLongBreak =
     Inactive LongBreak fullLongBreak
+
+
+noPastSessions =
+    []
 
 
 freshPomodoro =

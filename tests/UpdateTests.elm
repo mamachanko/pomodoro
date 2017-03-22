@@ -14,17 +14,16 @@ describeUpdate =
         [ describe "Pomodoro" <|
             [ test "when it starts" <|
                 \() ->
-                    Model unstartedPomodoro []
-                        |> update StartPomodoro
-                        |> Expect.equal ( Model freshPomodoro [], Cmd.none )
+                    update StartPomodoro initialModel
+                        |> Expect.equal ( Model freshPomodoro noPastSessions, Cmd.none )
             , test "when it is counting down" <|
                 \() ->
-                    Model (Active Pomodoro (Time.minute * 2 + Time.second * 24)) []
+                    Model (Active Pomodoro (Time.minute * 2 + Time.second * 24)) noPastSessions
                         |> update tick
-                        |> Expect.equal ( Model (Active Pomodoro (Time.minute * 2 + Time.second * 23)) [], Cmd.none )
+                        |> Expect.equal ( Model (Active Pomodoro (Time.minute * 2 + Time.second * 23)) noPastSessions, Cmd.none )
             , test "when it is up" <|
                 \() ->
-                    Model (Active Pomodoro (Time.second * 1)) []
+                    Model (Active Pomodoro (Time.second * 1)) noPastSessions
                         |> update tick
                         |> Expect.equal
                             ( Model (Over Pomodoro 0) [ Pomodoro ], Notifications.notifyEndOfPomodoro )
@@ -42,29 +41,29 @@ describeUpdate =
                             ( Model (Over Pomodoro 0) (List.repeat 8 Pomodoro), Notifications.notifyEndOfPomodoroStreak )
             , test "when it is running over" <|
                 \() ->
-                    Model (Over Pomodoro 0) []
+                    Model (Over Pomodoro 0) noPastSessions
                         |> update tick
-                        |> Expect.equal ( Model (Over Pomodoro Time.second) [], Cmd.none )
+                        |> Expect.equal ( Model (Over Pomodoro Time.second) noPastSessions, Cmd.none )
             , test "when it continues to run over" <|
                 \() ->
-                    Model (Over Pomodoro (Time.second * 59)) []
+                    Model (Over Pomodoro (Time.second * 59)) noPastSessions
                         |> update tick
-                        |> Expect.equal ( Model (Over Pomodoro Time.minute) [], Cmd.none )
+                        |> Expect.equal ( Model (Over Pomodoro Time.minute) noPastSessions, Cmd.none )
             ]
         , describe "short break" <|
             [ test "when it starts" <|
                 \() ->
-                    Model unstartedShortBreak []
+                    Model unstartedShortBreak noPastSessions
                         |> update StartShortBreak
-                        |> Expect.equal ( Model freshShortBreak [], Cmd.none )
+                        |> Expect.equal ( Model freshShortBreak noPastSessions, Cmd.none )
             , test "when it is counting down" <|
                 \() ->
-                    Model (Active ShortBreak (Time.minute * 2 + Time.second * 24)) []
+                    Model (Active ShortBreak (Time.minute * 2 + Time.second * 24)) noPastSessions
                         |> update tick
-                        |> Expect.equal ( Model (Active ShortBreak (Time.minute * 2 + Time.second * 23)) [], Cmd.none )
+                        |> Expect.equal ( Model (Active ShortBreak (Time.minute * 2 + Time.second * 23)) noPastSessions, Cmd.none )
             , test "when it is up" <|
                 \() ->
-                    Model (Active ShortBreak (Time.second * 1)) []
+                    Model (Active ShortBreak (Time.second * 1)) noPastSessions
                         |> update tick
                         |> Expect.equal
                             ( Model (Over ShortBreak 0) [ ShortBreak ]
@@ -72,29 +71,29 @@ describeUpdate =
                             )
             , test "when it is running over" <|
                 \() ->
-                    Model (Over ShortBreak 0) []
+                    Model (Over ShortBreak 0) noPastSessions
                         |> update tick
-                        |> Expect.equal ( Model (Over ShortBreak Time.second) [], Cmd.none )
+                        |> Expect.equal ( Model (Over ShortBreak Time.second) noPastSessions, Cmd.none )
             , test "when it continues to run over" <|
                 \() ->
-                    Model (Over ShortBreak (Time.second * 59)) []
+                    Model (Over ShortBreak (Time.second * 59)) noPastSessions
                         |> update tick
-                        |> Expect.equal ( Model (Over ShortBreak Time.minute) [], Cmd.none )
+                        |> Expect.equal ( Model (Over ShortBreak Time.minute) noPastSessions, Cmd.none )
             ]
         , describe "long break" <|
             [ test "when it starts" <|
                 \() ->
-                    Model unstartedLongBreak []
+                    Model unstartedLongBreak noPastSessions
                         |> update StartLongBreak
-                        |> Expect.equal ( Model freshLongBreak [], Cmd.none )
+                        |> Expect.equal ( Model freshLongBreak noPastSessions, Cmd.none )
             , test "when it is counting down" <|
                 \() ->
-                    Model (Active LongBreak (Time.minute * 2 + Time.second * 24)) []
+                    Model (Active LongBreak (Time.minute * 2 + Time.second * 24)) noPastSessions
                         |> update tick
-                        |> Expect.equal ( Model (Active LongBreak (Time.minute * 2 + Time.second * 23)) [], Cmd.none )
+                        |> Expect.equal ( Model (Active LongBreak (Time.minute * 2 + Time.second * 23)) noPastSessions, Cmd.none )
             , test "when it is up" <|
                 \() ->
-                    Model (Active LongBreak (Time.second * 1)) []
+                    Model (Active LongBreak (Time.second * 1)) noPastSessions
                         |> update tick
                         |> Expect.equal
                             ( Model (Over LongBreak 0) [ LongBreak ]
@@ -102,21 +101,21 @@ describeUpdate =
                             )
             , test "when it is running over" <|
                 \() ->
-                    Model (Over LongBreak 0) []
+                    Model (Over LongBreak 0) noPastSessions
                         |> update tick
-                        |> Expect.equal ( Model (Over LongBreak Time.second) [], Cmd.none )
+                        |> Expect.equal ( Model (Over LongBreak Time.second) noPastSessions, Cmd.none )
             , test "when it continues to run over" <|
                 \() ->
-                    Model (Over LongBreak (Time.second * 59)) []
+                    Model (Over LongBreak (Time.second * 59)) noPastSessions
                         |> update tick
-                        |> Expect.equal ( Model (Over LongBreak Time.minute) [], Cmd.none )
+                        |> Expect.equal ( Model (Over LongBreak Time.minute) noPastSessions, Cmd.none )
             ]
         , describe "desktop notifications" <|
             [ test "requests to permit desktop notifications" <|
                 \() ->
                     let
                         anyModel =
-                            Model (Inactive Pomodoro 123) []
+                            Model (Inactive Pomodoro 123) noPastSessions
                     in
                         anyModel
                             |> update EnableDesktopNotifications

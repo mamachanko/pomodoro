@@ -55,30 +55,17 @@ finishedSession model finishedSessionType =
             | currentSession = Over finishedSessionType 0
             , pastSessions = newPastSessions
           }
-        , endOfSessionNotification finishedSessionType newPastSessions
+        , endOfSessionNotification finishedSessionType
         )
 
 
-endOfSessionNotification sessionType pastSessions =
-    let
-        pomodoroCount =
-            List.length <| List.filter (\session -> session == Pomodoro) pastSessions
+endOfSessionNotification sessionType =
+    case sessionType of
+        Pomodoro ->
+            Notifications.notifyEndOfPomodoro
 
-        isPomodoroStreak =
-            pomodoroCount > 0 && pomodoroCount % 4 == 0
-    in
-        case sessionType of
-            Pomodoro ->
-                if isPomodoroStreak then
-                    Notifications.notifyEndOfPomodoroStreak
-                else
-                    Notifications.notifyEndOfPomodoro
-
-            ShortBreak ->
-                Notifications.notifyEndOfShortBreak
-
-            LongBreak ->
-                Notifications.notifyEndOfLongBreak
+        _ ->
+            Notifications.notifyEndOfBreak
 
 
 activeSession model activeSessionType remainder =

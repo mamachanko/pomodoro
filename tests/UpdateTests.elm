@@ -27,18 +27,6 @@ describeUpdate =
                         |> update tick
                         |> Expect.equal
                             ( Model (Over Pomodoro 0) [ Pomodoro ], Notifications.notifyEndOfPomodoro )
-            , test "when a streak of four is up" <|
-                \() ->
-                    Model (Active Pomodoro (Time.second * 1)) (List.repeat 3 Pomodoro)
-                        |> update tick
-                        |> Expect.equal
-                            ( Model (Over Pomodoro 0) (List.repeat 4 Pomodoro), Notifications.notifyEndOfPomodoroStreak )
-            , test "when a streak of eight is up" <|
-                \() ->
-                    Model (Active Pomodoro (Time.second * 1)) (List.repeat 7 Pomodoro)
-                        |> update tick
-                        |> Expect.equal
-                            ( Model (Over Pomodoro 0) (List.repeat 8 Pomodoro), Notifications.notifyEndOfPomodoroStreak )
             , test "when it is running over" <|
                 \() ->
                     Model (Over Pomodoro 0) noPastSessions
@@ -67,7 +55,7 @@ describeUpdate =
                         |> update tick
                         |> Expect.equal
                             ( Model (Over ShortBreak 0) [ ShortBreak ]
-                            , Notifications.notifyEndOfShortBreak
+                            , Notifications.notifyEndOfBreak
                             )
             , test "when it is running over" <|
                 \() ->
@@ -97,7 +85,7 @@ describeUpdate =
                         |> update tick
                         |> Expect.equal
                             ( Model (Over LongBreak 0) [ LongBreak ]
-                            , Notifications.notifyEndOfLongBreak
+                            , Notifications.notifyEndOfBreak
                             )
             , test "when it is running over" <|
                 \() ->

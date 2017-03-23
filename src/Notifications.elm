@@ -2,9 +2,7 @@ port module Notifications
     exposing
         ( enableDesktopNotifications
         , notifyEndOfPomodoro
-        , notifyEndOfPomodoroStreak
-        , notifyEndOfShortBreak
-        , notifyEndOfLongBreak
+        , notifyEndOfBreak
         )
 
 
@@ -13,19 +11,11 @@ enableDesktopNotifications =
 
 
 notifyEndOfPomodoro =
-    notify "It's short break-y time."
+    notify "It's break-y time."
 
 
-notifyEndOfPomodoroStreak =
-    notify "It's a time for a long break. You have done four consecutive Pomodoros."
-
-
-notifyEndOfShortBreak =
+notifyEndOfBreak =
     notify "Ora di pomodoro."
-
-
-notifyEndOfLongBreak =
-    notifyEndOfShortBreak
 
 
 notify message =

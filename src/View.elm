@@ -23,7 +23,18 @@ header =
 
 
 footer =
-    div [ id "footer" ] [ enableDesktopNotificationsButton ]
+    div [ id "footer" ]
+        [ enableDesktopNotificationsButton
+        , shortcuts
+        ]
+
+
+shortcuts =
+    div [ id "shortcuts" ]
+        [ div [] [ text "alt+p: Pomodoro" ]
+        , div [] [ text "alt+s: short break" ]
+        , div [] [ text "alt+l: long break" ]
+        ]
 
 
 timer model =

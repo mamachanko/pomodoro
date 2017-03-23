@@ -1,17 +1,22 @@
 module Subscriptions exposing (subscriptions)
 
-import Model exposing (Model, Session(Inactive, Active, Over), Action(Tick))
+import Model exposing (Model, Session(Inactive, Active, Over), Action(Tick, KeyboardEvent))
 import Time exposing (every, second)
+import Keyboard
 
 
 subscriptions : Model.Model -> Sub Model.Action
 subscriptions { currentSession } =
-    case currentSession of
-        Inactive _ _ ->
-            Sub.none
+    let
+        keyPresses =
+            Keyboard.presses KeyboardEvent
 
-        Active _ _ ->
+        seconds =
             every second Tick
+    in
+        case currentSession of
+            Inactive _ _ ->
+                keyPresses
 
-        Over _ _ ->
-            every second Tick
+            _ ->
+                Sub.batch [ seconds, keyPresses ]

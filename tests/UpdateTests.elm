@@ -109,4 +109,30 @@ describeUpdate =
                             |> update EnableDesktopNotifications
                             |> Expect.equal ( anyModel, Notifications.enableDesktopNotifications )
             ]
+        , describe "keyboard shortcuts" <|
+            [ test "starts a Pomodoro" <|
+                \() ->
+                    let
+                        anyModel =
+                            Model (Inactive Pomodoro 123) noPastSessions
+                    in
+                        update (KeyboardEvent 960) anyModel
+                            |> Expect.equal ( Model freshPomodoro noPastSessions, Cmd.none )
+            , test "starts a short break" <|
+                \() ->
+                    let
+                        anyModel =
+                            Model (Inactive Pomodoro 123) noPastSessions
+                    in
+                        update (KeyboardEvent 223) anyModel
+                            |> Expect.equal ( Model freshShortBreak noPastSessions, Cmd.none )
+            , test "starts a long break" <|
+                \() ->
+                    let
+                        anyModel =
+                            Model (Inactive Pomodoro 123) noPastSessions
+                    in
+                        update (KeyboardEvent 172) anyModel
+                            |> Expect.equal ( Model freshLongBreak noPastSessions, Cmd.none )
+            ]
         ]

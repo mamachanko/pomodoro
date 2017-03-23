@@ -44,3 +44,12 @@ h1 {
   justify-content: center;
   flex-direction: column;
 }
+
+#shortcuts {
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+  line-height: 1.5;
+}

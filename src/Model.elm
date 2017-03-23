@@ -1,6 +1,7 @@
 module Model exposing (..)
 
 import Time
+import Keyboard
 
 
 initialModel : Model
@@ -38,6 +39,7 @@ type Action
     | StartLongBreak
     | Tick Time.Time
     | EnableDesktopNotifications
+    | KeyboardEvent Keyboard.KeyCode
 
 
 fullPomodoro : Remainder

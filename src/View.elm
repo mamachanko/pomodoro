@@ -85,7 +85,17 @@ counter { pastSessions } =
 
 
 countPomodoros sessions =
-    List.length <| List.filter (\session -> session == Pomodoro) sessions
+    List.length <|
+        List.filter isDonePomodoro sessions
+
+
+isDonePomodoro session =
+    case session of
+        DonePomodoro _ ->
+            True
+
+        _ ->
+            False
 
 
 enableDesktopNotificationsButton =

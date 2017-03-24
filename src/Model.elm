@@ -10,13 +10,19 @@ initialModel =
 
 
 type alias Model =
-    { currentSession : Session, pastSessions : List SessionType }
+    { currentSession : Session, pastSessions : List DoneSession }
 
 
 type Session
     = Active SessionType Remainder
     | Inactive SessionType Remainder
     | Over SessionType Overflow
+
+
+type DoneSession
+    = DonePomodoro String
+    | DoneShortBreak
+    | DoneLongBreak
 
 
 type SessionType
@@ -40,6 +46,7 @@ type Action
     | Tick Time.Time
     | EnableDesktopNotifications
     | KeyboardEvent Keyboard.KeyCode
+    | RecordPomodoro String
 
 
 fullPomodoro : Remainder

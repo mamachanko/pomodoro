@@ -5,4 +5,4 @@ set -ex
 ./format.sh
 ./build.sh
 
-elm test
+elm test --yes

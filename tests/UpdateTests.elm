@@ -26,7 +26,13 @@ describeUpdate =
                     Model (Active Pomodoro (Time.second * 1)) noPastSessions
                         |> update tick
                         |> Expect.equal
-                            ( Model (Over Pomodoro 0) [ Pomodoro ], Notifications.notifyEndOfPomodoro )
+                            ( Model (Over Pomodoro 0) noPastSessions, Notifications.notifyEndOfPomodoro )
+            , test "when it is recorded" <|
+                \() ->
+                    Model (Over Pomodoro (Time.second * 50)) []
+                        |> update (RecordPomodoro "worked on stuff")
+                        |> Expect.equal
+                            ( Model (Over Pomodoro 0) [ DonePomodoro "worked on stuff" ], Notifications.notifyEndOfPomodoro )
             , test "when it is running over" <|
                 \() ->
                     Model (Over Pomodoro 0) noPastSessions
@@ -54,7 +60,7 @@ describeUpdate =
                     Model (Active ShortBreak (Time.second * 1)) noPastSessions
                         |> update tick
                         |> Expect.equal
-                            ( Model (Over ShortBreak 0) [ ShortBreak ]
+                            ( Model (Over ShortBreak 0) [ DoneShortBreak ]
                             , Notifications.notifyEndOfBreak
                             )
             , test "when it is running over" <|
@@ -84,7 +90,7 @@ describeUpdate =
                     Model (Active LongBreak (Time.second * 1)) noPastSessions
                         |> update tick
                         |> Expect.equal
-                            ( Model (Over LongBreak 0) [ LongBreak ]
+                            ( Model (Over LongBreak 0) [ DoneLongBreak ]
                             , Notifications.notifyEndOfBreak
                             )
             , test "when it is running over" <|

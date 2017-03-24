@@ -26,7 +26,11 @@ update action model =
         EnableDesktopNotifications ->
             ( model, Notifications.enableDesktopNotifications )
 
+        RecordPomodoro workDone ->
+            ( model, Cmd.none )
 
+
+updateTick : Model -> Time.Time -> ( Model, Cmd action )
 updateTick model time =
     case model of
         { currentSession } ->
@@ -41,6 +45,7 @@ updateTick model time =
                     ( model, Cmd.none )
 
 
+updateActiveSession : Model -> SessionType -> ( Model, Cmd action )
 updateActiveSession model sessionType remainder =
     let
         newRemainder =

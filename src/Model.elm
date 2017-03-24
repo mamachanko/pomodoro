@@ -6,11 +6,11 @@ import Keyboard
 
 initialModel : Model
 initialModel =
-    { currentSession = unstartedPomodoro, pastSessions = noPastSessions }
+    { currentSession = unstartedPomodoro, pastPomodoros = nopastPomodoros }
 
 
 type alias Model =
-    { currentSession : Session, pastSessions : List SessionType }
+    { currentSession : Session, pastPomodoros : List String }
 
 
 type Session
@@ -40,6 +40,7 @@ type Action
     | Tick Time.Time
     | EnableDesktopNotifications
     | KeyboardEvent Keyboard.KeyCode
+    | RecordPomodoro String
 
 
 fullPomodoro : Remainder
@@ -69,7 +70,7 @@ unstartedLongBreak =
     Inactive LongBreak fullLongBreak
 
 
-noPastSessions =
+nopastPomodoros =
     []
 
 

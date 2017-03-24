@@ -38,14 +38,6 @@ describeView =
                         |> Query.find [ id "timer" ]
                         |> Query.has [ text ("-12:34") ]
             ]
-        , describe "pomodoro counter"
-            [ test "displays the number of Pomodoros done" <|
-                \() ->
-                    view (Model (Over Pomodoro 0) [ Pomodoro, Pomodoro ])
-                        |> Query.fromHtml
-                        |> Query.find [ id "counter" ]
-                        |> Query.has [ text ("2") ]
-            ]
         , describe "controls"
             [ test "displays a button to start a Pomodoro" <|
                 \() ->

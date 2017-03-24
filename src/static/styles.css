@@ -25,11 +25,6 @@ h1 {
   font-size: 100px;
 }
 
-#counter {
-  margin-bottom: 30px;
-  font-size: 25px;
-}
-
 #controls {
   display: flex;
   flex-direction: row;

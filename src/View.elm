@@ -12,7 +12,6 @@ view model =
     div [ id "pomodoro" ]
         [ header
         , timer model
-        , counter model
         , controls
         , footer
         ]
@@ -77,15 +76,6 @@ longBreakButton =
             ]
             [ text "Long break" ]
         ]
-
-
-counter { pastSessions } =
-    div [ id "counter" ]
-        [ text ("Pomodoros: " ++ (toString (countPomodoros pastSessions))) ]
-
-
-countPomodoros sessions =
-    List.length <| List.filter (\session -> session == Pomodoro) sessions
 
 
 enableDesktopNotificationsButton =

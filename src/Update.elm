@@ -26,7 +26,11 @@ update action model =
         EnableDesktopNotifications ->
             ( model, Notifications.enableDesktopNotifications )
 
+        RecordPomodoro workDone ->
+            ( { model | pastPomodoros = workDone :: model.pastPomodoros }, Cmd.none )
 
+
+updateTick : Model -> Time.Time -> ( Model, Cmd action )
 updateTick model time =
     case model of
         { currentSession } ->
@@ -41,6 +45,7 @@ updateTick model time =
                     ( model, Cmd.none )
 
 
+updateActiveSession : Model -> SessionType -> Remainder -> ( Model, Cmd action )
 updateActiveSession model sessionType remainder =
     let
         newRemainder =
@@ -67,17 +72,9 @@ updateKeyboardEvent model keycode =
             ( model, Cmd.none )
 
 
+finishedSession : Model -> SessionType -> ( Model, Cmd action )
 finishedSession model finishedSessionType =
-    let
-        newPastSessions =
-            finishedSessionType :: model.pastSessions
-    in
-        ( { model
-            | currentSession = Over finishedSessionType 0
-            , pastSessions = newPastSessions
-          }
-        , endOfSessionNotification finishedSessionType
-        )
+    ( { model | currentSession = Over finishedSessionType 0 }, endOfSessionNotification finishedSessionType )
 
 
 endOfSessionNotification sessionType =
@@ -90,11 +87,7 @@ endOfSessionNotification sessionType =
 
 
 activeSession model activeSessionType remainder =
-    ( { model
-        | currentSession = Active activeSessionType remainder
-      }
-    , Cmd.none
-    )
+    ( { model | currentSession = Active activeSessionType remainder }, Cmd.none )
 
 
 countDown =

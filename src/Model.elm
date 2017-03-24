@@ -6,7 +6,7 @@ import Keyboard
 
 initialModel : Model
 initialModel =
-    { currentSession = unstartedPomodoro, pastPomodoros = nopastPomodoros }
+    { currentSession = unstartedPomodoro, pastPomodoros = noPastPomodoros }
 
 
 type alias Model =
@@ -70,7 +70,7 @@ unstartedLongBreak =
     Inactive LongBreak fullLongBreak
 
 
-nopastPomodoros =
+noPastPomodoros =
     []
 
 

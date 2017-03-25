@@ -1,15 +1,15 @@
 module Pomodoro exposing (..)
 
-import Model exposing (initialModel)
+import Html exposing (program)
+import Model exposing (initialCmd, initialModel)
+import Subscriptions exposing (subscriptions)
 import Update exposing (update)
 import View exposing (view)
-import Subscriptions exposing (subscriptions)
-import Html exposing (program)
 
 
 main =
     program
-        { init = ( initialModel, Cmd.none )
+        { init = ( initialModel, initialCmd )
         , view = view
         , update = update
         , subscriptions = subscriptions

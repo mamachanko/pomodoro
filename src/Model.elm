@@ -4,9 +4,18 @@ import Time
 import Keyboard
 
 
+init : ( Model, Cmd action )
+init =
+    ( initialModel, initialCmd )
+
+
 initialModel : Model
 initialModel =
     { currentSession = unstartedPomodoro, pastPomodoros = noPastPomodoros }
+
+
+initialCmd =
+    Cmd.none
 
 
 type alias Model =

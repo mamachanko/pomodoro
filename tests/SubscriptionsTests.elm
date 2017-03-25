@@ -13,16 +13,16 @@ describeSubscriptions =
     describe "subscriptions"
         [ test "does nothing for an inactive session" <|
             \() ->
-                subscriptions (Model unstartedPomodoro [])
+                subscriptions initialModel
                     |> Expect.equal (Keyboard.presses KeyboardEvent)
         , test "emits Tick every second for an active session" <|
             \() ->
-                subscriptions (Model freshPomodoro [])
+                subscriptions { initialModel | currentSession = freshPomodoro }
                     |> Expect.equal
                         (Sub.batch [ Time.every Time.second Tick, Keyboard.presses KeyboardEvent ])
         , test "emits Tick every second for a sessions running over" <|
             \() ->
-                subscriptions (Model (Over Pomodoro (Time.second * 45)) [])
+                subscriptions { initialModel | currentSession = Over Pomodoro Time.second }
                     |> Expect.equal
                         (Sub.batch [ Time.every Time.second Tick, Keyboard.presses KeyboardEvent ])
         ]

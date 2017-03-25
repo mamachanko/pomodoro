@@ -2,9 +2,9 @@ module View exposing (view)
 
 import Model exposing (..)
 import Format exposing (formatTime)
-import Html exposing (Html, div, td, text, audio, source, button, h1)
-import Html.Attributes exposing (id)
-import Html.Events exposing (onClick)
+import Html exposing (Html, div, td, text, input, button, h1)
+import Html.Attributes exposing (class, id, type_, value)
+import Html.Events exposing (onClick, onInput)
 
 
 view : Model -> Html Action
@@ -13,12 +13,44 @@ view model =
         [ header
         , timer model
         , controls
+        , sessionLog model
         , footer
         ]
 
 
 header =
     h1 [ id "header" ] [ text "Pomodoro" ]
+
+
+sessionLog { pastPomodoros, currentText, showPomodoroLogInput } =
+    let
+        elements =
+            if showPomodoroLogInput then
+                [ logPomodoroInput currentText
+                , logPomodoroButton
+                , pomodoroLog pastPomodoros
+                ]
+            else
+                [ pomodoroLog pastPomodoros ]
+    in
+        div [] elements
+
+
+logPomodoroInput currentText =
+    input [ id "workDone", type_ "text", onInput TextInput, value currentText ] []
+
+
+logPomodoroButton =
+    button [ id "saveWorkDone", onClick RecordPomodoro ] [ text "Save" ]
+
+
+pomodoroLog pastPomodoros =
+    div
+        [ id "pomodoroLog" ]
+        (List.map
+            (\loggedPomodoro -> div [ class "loggedPomodoro" ] [ text loggedPomodoro ])
+            pastPomodoros
+        )
 
 
 footer =

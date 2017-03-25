@@ -4,7 +4,7 @@ import Expect
 import Model exposing (Model, Session(..), SessionType(..), initialModel)
 import Test exposing (..)
 import Test.Html.Query as Query
-import Test.Html.Selector exposing (id, tag, text)
+import Test.Html.Selector exposing (id, tag, text, attribute, class)
 import Time
 import View exposing (view)
 
@@ -63,5 +63,48 @@ describeView =
                         |> Query.fromHtml
                         |> Query.find [ tag "button", id "enableDesktopNotifications" ]
                         |> Query.has [ text "Enable desktop notifications" ]
+            ]
+        , describe "session log"
+            [ test "shows text input" <|
+                \() ->
+                    view
+                        { initialModel
+                            | currentText = "this is what I worked on"
+                            , showPomodoroLogInput = True
+                        }
+                        |> Query.fromHtml
+                        |> Query.find [ id "workDone", tag "input", attribute "type" "text" ]
+                        |> Query.has [ attribute "value" "this is what I worked on" ]
+            , test "shows a button" <|
+                \() ->
+                    view
+                        { initialModel
+                            | currentText = "this is what I worked on"
+                            , showPomodoroLogInput = True
+                        }
+                        |> Query.fromHtml
+                        |> Query.find [ id "saveWorkDone", tag "button" ]
+                        |> Query.has [ text "Save" ]
+            , test "does not show text input" <|
+                \() ->
+                    view
+                        { initialModel
+                            | showPomodoroLogInput = False
+                        }
+                        |> Query.fromHtml
+                        |> Query.findAll [ id "workDone", tag "input", attribute "type" "text" ]
+                        |> Query.count (Expect.equal 0)
+            , test "shows session log" <|
+                \() ->
+                    view { initialModel | pastPomodoros = [ "worked on this", "worked on that" ] }
+                        |> Query.fromHtml
+                        |> Query.findAll [ class "loggedPomodoro", tag "div" ]
+                        |> Query.count (Expect.equal 2)
+            , test "shows empty session log" <|
+                \() ->
+                    view { initialModel | pastPomodoros = [] }
+                        |> Query.fromHtml
+                        |> Query.findAll [ class "loggedPomodoro" ]
+                        |> Query.count (Expect.equal 0)
             ]
         ]

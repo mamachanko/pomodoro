@@ -26,8 +26,11 @@ update action model =
         EnableDesktopNotifications ->
             ( model, Notifications.enableDesktopNotifications )
 
-        RecordPomodoro workDone ->
-            ( { model | pastPomodoros = workDone :: model.pastPomodoros }, Cmd.none )
+        RecordPomodoro ->
+            ( { model | pastPomodoros = model.currentText :: model.pastPomodoros, currentText = "", showPomodoroLogInput = False }, Cmd.none )
+
+        TextInput input ->
+            ( { model | currentText = input }, Cmd.none )
 
 
 updateTick : Model -> Time.Time -> ( Model, Cmd action )
@@ -74,7 +77,12 @@ updateKeyboardEvent model keycode =
 
 finishedSession : Model -> SessionType -> ( Model, Cmd action )
 finishedSession model finishedSessionType =
-    ( { model | currentSession = Over finishedSessionType 0 }, endOfSessionNotification finishedSessionType )
+    ( { model
+        | currentSession = Over finishedSessionType 0
+        , showPomodoroLogInput = True
+      }
+    , endOfSessionNotification finishedSessionType
+    )
 
 
 endOfSessionNotification sessionType =

@@ -38,18 +38,9 @@ describeUpdate =
                         |> Expect.equal
                             ( { initialModel
                                 | currentSession = (Over Pomodoro 0)
+                                , showPomodoroLogInput = True
                               }
                             , Notifications.notifyEndOfPomodoro
-                            )
-            , test "when it is recorded" <|
-                \() ->
-                    { initialModel | pastPomodoros = [ "worked on stuff" ] }
-                        |> update (RecordPomodoro "worked on more stuff")
-                        |> Expect.equal
-                            ( { initialModel
-                                | pastPomodoros = [ "worked on more stuff", "worked on stuff" ]
-                              }
-                            , Cmd.none
                             )
             , test "when it is running over" <|
                 \() ->
@@ -189,6 +180,34 @@ describeUpdate =
                         |> Expect.equal
                             ( { initialModel
                                 | currentSession = freshLongBreak
+                              }
+                            , Cmd.none
+                            )
+            ]
+        , describe "recording Pomodoros"
+            [ test "when it is recorded" <|
+                \() ->
+                    { initialModel
+                        | pastPomodoros = [ "worked on stuff" ]
+                        , currentText = "worked on more stuff"
+                        , showPomodoroLogInput = True
+                    }
+                        |> update RecordPomodoro
+                        |> Expect.equal
+                            ( { initialModel
+                                | pastPomodoros = [ "worked on more stuff", "worked on stuff" ]
+                                , currentText = ""
+                                , showPomodoroLogInput = False
+                              }
+                            , Cmd.none
+                            )
+            , test "when there's text input" <|
+                \() ->
+                    { initialModel | currentText = "worked on " }
+                        |> update (TextInput "worked on stuff")
+                        |> Expect.equal
+                            ( { initialModel
+                                | currentText = "worked on stuff"
                               }
                             , Cmd.none
                             )

@@ -4,22 +4,26 @@ import Time
 import Keyboard
 
 
-init : ( Model, Cmd action )
-init =
-    ( initialModel, initialCmd )
-
-
-initialModel : Model
-initialModel =
-    { currentSession = unstartedPomodoro, pastPomodoros = noPastPomodoros }
-
-
+initialCmd : Cmd action
 initialCmd =
     Cmd.none
 
 
+initialModel : Model
+initialModel =
+    { currentSession = unstartedPomodoro
+    , pastPomodoros = noPastPomodoros
+    , currentText = ""
+    , showPomodoroLogInput = False
+    }
+
+
 type alias Model =
-    { currentSession : Session, pastPomodoros : List String }
+    { currentSession : Session
+    , pastPomodoros : List String
+    , currentText : String
+    , showPomodoroLogInput : Bool
+    }
 
 
 type Session
@@ -49,7 +53,8 @@ type Action
     | Tick Time.Time
     | EnableDesktopNotifications
     | KeyboardEvent Keyboard.KeyCode
-    | RecordPomodoro String
+    | RecordPomodoro
+    | TextInput String
 
 
 fullPomodoro : Remainder

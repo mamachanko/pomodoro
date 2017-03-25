@@ -6,10 +6,6 @@ port module Notifications
         )
 
 
-bell =
-    "beep.mp3"
-
-
 enableDesktopNotifications =
     requestPermissions ""
 
@@ -17,24 +13,19 @@ enableDesktopNotifications =
 notifyEndOfPomodoro =
     Cmd.batch
         [ notify "It's break-y time."
-        , ringBell
+        , ringBell ""
         ]
 
 
 notifyEndOfBreak =
     Cmd.batch
         [ notify "Ora di pomodoro."
-        , ringBell
+        , ringBell ""
         ]
 
 
 notify message =
     triggerNotification message
-
-
-ringBell : Cmd msg
-ringBell =
-    playSound bell
 
 
 port requestPermissions : String -> Cmd action
@@ -43,4 +34,4 @@ port requestPermissions : String -> Cmd action
 port triggerNotification : String -> Cmd action
 
 
-port playSound : String -> Cmd action
+port ringBell : String -> Cmd action

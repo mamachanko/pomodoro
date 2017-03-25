@@ -2,7 +2,7 @@ module View exposing (view)
 
 import Model exposing (..)
 import Format exposing (formatTime)
-import Html exposing (Html, div, td, text, input, button, h1)
+import Html exposing (Html, div, td, text, input, button, h1, h2)
 import Html.Attributes exposing (class, id, type_, value)
 import Html.Events exposing (onClick, onInput)
 
@@ -11,10 +11,8 @@ view : Model -> Html Action
 view model =
     div [ id "pomodoro" ]
         [ header
-        , timer model
-        , controls
-        , sessionLog model
-        , footer
+        , pomodoroTimer model
+        , pomodoroLog model
         ]
 
 
@@ -22,61 +20,90 @@ header =
     h1 [ id "header" ] [ text "Pomodoro" ]
 
 
-sessionLog { pastPomodoros, currentText, showPomodoroLogInput } =
+pomodoroLog { pastPomodoros, currentText, showPomodoroLogInput } =
     let
-        elements =
+        pomodoroLogInputElements =
             if showPomodoroLogInput then
-                [ logPomodoroInput currentText
-                , logPomodoroButton
-                , pomodoroLog pastPomodoros
-                ]
+                div [ id "pomodoroLogInput" ]
+                    [ pomodoroLogInput currentText
+                    , pomodoroLogButton
+                    ]
             else
-                [ pomodoroLog pastPomodoros ]
+                text ""
     in
-        div [] elements
+        div [ id "pomodoroLog" ]
+            [ h2 [] [ text "Pomodoro Log" ]
+            , pomodoroLogInputElements
+            , pomodoroLogEntries pastPomodoros
+            ]
 
 
-logPomodoroInput currentText =
-    input [ id "workDone", type_ "text", onInput TextInput, value currentText ] []
+pomodoroLogInput currentText =
+    input
+        [ id "pomodoroLogInputText"
+        , type_ "text"
+        , onInput TextInput
+        , value currentText
+        ]
+        []
 
 
-logPomodoroButton =
-    button [ id "saveWorkDone", onClick RecordPomodoro ] [ text "Save" ]
+pomodoroLogButton =
+    button
+        [ id "pomodoroLogButton"
+        , onClick RecordPomodoro
+        ]
+        [ text "Log Pomodoro" ]
 
 
-pomodoroLog pastPomodoros =
-    div
-        [ id "pomodoroLog" ]
-        (List.map
-            (\loggedPomodoro -> div [ class "loggedPomodoro" ] [ text loggedPomodoro ])
-            pastPomodoros
-        )
+pomodoroLogEntries pastPomodoros =
+    let
+        entries =
+            if (List.isEmpty pastPomodoros) then
+                [ text "<no logged Pomodoros yet>" ]
+            else
+                (List.map
+                    (\pomodoroLogEntry -> div [ class "pomodoroLogEntry" ] [ text pomodoroLogEntry ])
+                    pastPomodoros
+                )
+    in
+        div
+            [ id "pomodoroLogEntries" ]
+            entries
 
 
-footer =
-    div [ id "footer" ]
-        [ enableDesktopNotificationsButton
-        , shortcuts
+pomodoroTimer { currentSession } =
+    div [ id "timer" ]
+        [ time currentSession
+        , timerControls
+        , timerShortcuts
+        , notificationControls
         ]
 
 
-shortcuts =
-    div [ id "shortcuts" ]
-        [ div [] [ text "alt+p: Pomodoro" ]
-        , div [] [ text "alt+s: short break" ]
-        , div [] [ text "alt+l: long break" ]
+timerShortcuts =
+    div [ id "timerShortcuts" ]
+        [ div [] [ text "alt+p" ]
+        , div [] [ text "alt+s" ]
+        , div [] [ text "alt+l" ]
         ]
 
 
-timer model =
-    div [ id "timer" ] [ text (formatSession model) ]
+time session =
+    div [ id "time" ] [ text (formatSession session) ]
 
 
-controls =
-    div [ id "controls" ]
+timerControls =
+    div [ id "timerControls" ]
         [ pomodoroButton
         , shortBreakButton
         , longBreakButton
+        ]
+
+
+notificationControls =
+    div [ id "notificationControls" ]
+        [ enableDesktopNotificationsButton
         ]
 
 
@@ -119,9 +146,9 @@ enableDesktopNotificationsButton =
         ]
 
 
-formatSession : Model -> String
-formatSession { currentSession } =
-    case currentSession of
+formatSession : Session -> String
+formatSession session =
+    case session of
         Active _ time ->
             formatTime time
 

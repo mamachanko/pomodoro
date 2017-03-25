@@ -12,7 +12,7 @@ initialCmd =
 initialModel : Model
 initialModel =
     { currentSession = unstartedPomodoro
-    , pastPomodoros = noPastPomodoros
+    , pastPomodoros = []
     , currentText = ""
     , showPomodoroLogInput = False
     }

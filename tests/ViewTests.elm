@@ -73,7 +73,7 @@ describeView =
                             , showPomodoroLogInput = True
                         }
                         |> Query.fromHtml
-                        |> Query.find [ id "workDone", tag "input", attribute "type" "text" ]
+                        |> Query.find [ id "pomodoroLogInput", tag "input", attribute "type" "text" ]
                         |> Query.has [ attribute "value" "this is what I worked on" ]
             , test "shows a button" <|
                 \() ->
@@ -83,28 +83,25 @@ describeView =
                             , showPomodoroLogInput = True
                         }
                         |> Query.fromHtml
-                        |> Query.find [ id "saveWorkDone", tag "button" ]
-                        |> Query.has [ text "Save" ]
+                        |> Query.find [ id "pomodoroLogButton", tag "button" ]
+                        |> Query.has [ text "Log Pomodoro" ]
             , test "does not show text input" <|
                 \() ->
-                    view
-                        { initialModel
-                            | showPomodoroLogInput = False
-                        }
+                    view { initialModel | showPomodoroLogInput = False }
                         |> Query.fromHtml
-                        |> Query.findAll [ id "workDone", tag "input", attribute "type" "text" ]
+                        |> Query.findAll [ id "pomodoroLogButton", tag "input", attribute "type" "text" ]
                         |> Query.count (Expect.equal 0)
             , test "shows session log" <|
                 \() ->
                     view { initialModel | pastPomodoros = [ "worked on this", "worked on that" ] }
                         |> Query.fromHtml
-                        |> Query.findAll [ class "loggedPomodoro", tag "div" ]
+                        |> Query.findAll [ class "pomodoroLogEntry" ]
                         |> Query.count (Expect.equal 2)
             , test "shows empty session log" <|
                 \() ->
                     view { initialModel | pastPomodoros = [] }
                         |> Query.fromHtml
-                        |> Query.findAll [ class "loggedPomodoro" ]
+                        |> Query.findAll [ class "pomodoroLogEntry" ]
                         |> Query.count (Expect.equal 0)
             ]
         ]

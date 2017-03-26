@@ -2,8 +2,8 @@ module View exposing (view)
 
 import Model exposing (..)
 import Format exposing (formatTime)
-import Html exposing (Html, div, td, text, input, button, h1, h2)
-import Html.Attributes exposing (class, id, type_, value)
+import Html exposing (Html, div, td, text, input, button, h1, h2, ul, li)
+import Html.Attributes exposing (class, id, type_, value, style)
 import Html.Events exposing (onClick, onInput)
 
 
@@ -22,14 +22,17 @@ header =
 
 pomodoroLog { pastPomodoros, currentText, showPomodoroLogInput } =
     let
-        pomodoroLogInputElements =
+        pomodoroLogInputVisibility =
             if showPomodoroLogInput then
-                div [ id "pomodoroLogInput" ]
-                    [ pomodoroLogInput currentText
-                    , pomodoroLogButton
-                    ]
+                "visible"
             else
-                text ""
+                "hidden"
+
+        pomodoroLogInputElements =
+            div [ id "pomodoroLogInput", style [ ( "visibility", pomodoroLogInputVisibility ) ] ]
+                [ pomodoroLogInput currentText
+                , pomodoroLogButton
+                ]
     in
         div [ id "pomodoroLog" ]
             [ h2 [] [ text "Pomodoro Log" ]
@@ -63,11 +66,11 @@ pomodoroLogEntries pastPomodoros =
                 [ text "<no logged Pomodoros yet>" ]
             else
                 (List.map
-                    (\pomodoroLogEntry -> div [ class "pomodoroLogEntry" ] [ text pomodoroLogEntry ])
+                    (\pomodoroLogEntry -> li [ class "pomodoroLogEntry" ] [ text pomodoroLogEntry ])
                     pastPomodoros
                 )
     in
-        div
+        ul
             [ id "pomodoroLogEntries" ]
             entries
 

@@ -4,9 +4,11 @@ import Time
 import Keyboard
 
 
-initialCmd : Cmd action
-initialCmd =
-    Cmd.none
+defaults =
+    { pomodoro = Time.minute * 25
+    , shortbreak = Time.minute * 5
+    , longbreak = Time.minute * 15
+    }
 
 
 initialModel : Model
@@ -59,17 +61,17 @@ type Action
 
 fullPomodoro : Remainder
 fullPomodoro =
-    Time.minute * 25
+    defaults.pomodoro
 
 
 fullShortBreak : Remainder
 fullShortBreak =
-    Time.minute * 5
+    defaults.shortbreak
 
 
 fullLongBreak : Remainder
 fullLongBreak =
-    Time.minute * 20
+    defaults.longbreak
 
 
 unstartedPomodoro =

@@ -1,7 +1,7 @@
 module Pomodoro exposing (..)
 
 import Html exposing (program)
-import Model exposing (initialCmd, initialModel)
+import Model exposing (initialModel)
 import Subscriptions exposing (subscriptions)
 import Update exposing (update)
 import View exposing (view)
@@ -9,7 +9,7 @@ import View exposing (view)
 
 main =
     program
-        { init = ( initialModel, initialCmd )
+        { init = ( initialModel, Cmd.none )
         , view = view
         , update = update
         , subscriptions = subscriptions

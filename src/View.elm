@@ -60,19 +60,18 @@ pomodoroLogButton =
 
 
 pomodoroLogEntries pastPomodoros =
-    let
-        entries =
-            if (List.isEmpty pastPomodoros) then
-                [ text "<no logged Pomodoros yet>" ]
-            else
-                (List.map
-                    (\pomodoroLogEntry -> li [ class "pomodoroLogEntry" ] [ text pomodoroLogEntry ])
-                    pastPomodoros
-                )
-    in
-        ul
-            [ id "pomodoroLogEntries" ]
-            entries
+    if (List.isEmpty pastPomodoros) then
+        pomodoroLogNoEntries
+    else
+        ul [ id "pomodoroLogEntries" ]
+            (List.map
+                (\pomodoroLogEntry -> li [ class "pomodoroLogEntry" ] [ text pomodoroLogEntry ])
+                pastPomodoros
+            )
+
+
+pomodoroLogNoEntries =
+    div [ id "pomodoroLogEntriesEmpty" ] [ text "<no logged Pomodoros yet>" ]
 
 
 pomodoroTimer { currentSession } =

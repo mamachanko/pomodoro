@@ -84,6 +84,16 @@ describeUpdate =
                               }
                             , Cmd.none
                             )
+            , test "when it is up" <|
+                \() ->
+                    { initialModel | currentSession = Active ShortBreak <| Time.second * 1 }
+                        |> update tick
+                        |> Expect.equal
+                            ( { initialModel
+                                | currentSession = (Over ShortBreak 0)
+                              }
+                            , Notifications.notifyEndOfBreak
+                            )
             , test "when it is running over" <|
                 \() ->
                     { initialModel | currentSession = Over ShortBreak 0 }
@@ -125,6 +135,16 @@ describeUpdate =
                                 | currentSession = Active LongBreak <| Time.minute * 2 + Time.second * 23
                               }
                             , Cmd.none
+                            )
+            , test "when it is up" <|
+                \() ->
+                    { initialModel | currentSession = Active LongBreak <| Time.second * 1 }
+                        |> update tick
+                        |> Expect.equal
+                            ( { initialModel
+                                | currentSession = (Over LongBreak 0)
+                              }
+                            , Notifications.notifyEndOfBreak
                             )
             , test "when it is running over" <|
                 \() ->

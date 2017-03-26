@@ -27,7 +27,13 @@ update action model =
             ( model, Notifications.enableDesktopNotifications )
 
         RecordPomodoro ->
-            ( { model | pastPomodoros = model.currentText :: model.pastPomodoros, currentText = "", showPomodoroLogInput = False }, Cmd.none )
+            ( { model
+                | pastPomodoros = model.currentText :: model.pastPomodoros
+                , currentText = ""
+                , showPomodoroLogInput = False
+              }
+            , Cmd.none
+            )
 
         TextInput input ->
             ( { model | currentText = input }, Cmd.none )
@@ -77,12 +83,19 @@ updateKeyboardEvent model keycode =
 
 finishedSession : Model -> SessionType -> ( Model, Cmd action )
 finishedSession model finishedSessionType =
-    ( { model
-        | currentSession = Over finishedSessionType 0
-        , showPomodoroLogInput = True
-      }
-    , endOfSessionNotification finishedSessionType
-    )
+    let
+        newSession =
+            Over finishedSessionType 0
+
+        newModel =
+            case finishedSessionType of
+                Pomodoro ->
+                    { model | currentSession = newSession, showPomodoroLogInput = True }
+
+                _ ->
+                    { model | currentSession = newSession }
+    in
+        ( newModel, endOfSessionNotification finishedSessionType )
 
 
 endOfSessionNotification sessionType =

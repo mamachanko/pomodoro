@@ -35,3 +35,6 @@ port triggerNotification : String -> Cmd action
 
 
 port ringBell : String -> Cmd action
+
+
+port updatePomodoroLog : String -> Cmd action

@@ -9,7 +9,7 @@ import View exposing (view)
 
 init : List String -> ( Model, Cmd Action )
 init pomodoroLog =
-    ( { initialModel | pastPomodoros = pomodoroLog }, Cmd.none )
+    ( { initialModel | pomodoroLog = pomodoroLog }, Cmd.none )
 
 
 main =

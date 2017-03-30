@@ -20,7 +20,7 @@ header =
     h1 [ id "header" ] [ text "Pomodoro" ]
 
 
-pomodoroLog { pastPomodoros, currentText, showPomodoroLogInput } =
+pomodoroLog { pomodoroLog, currentText, showPomodoroLogInput } =
     let
         pomodoroLogInputVisibility =
             if showPomodoroLogInput then
@@ -37,7 +37,7 @@ pomodoroLog { pastPomodoros, currentText, showPomodoroLogInput } =
         div [ id "pomodoroLog" ]
             [ h2 [] [ text "Pomodoro Log" ]
             , pomodoroLogInputElements
-            , pomodoroLogEntries pastPomodoros
+            , pomodoroLogEntries pomodoroLog
             ]
 
 
@@ -59,14 +59,14 @@ pomodoroLogButton =
         [ text "Log Pomodoro" ]
 
 
-pomodoroLogEntries pastPomodoros =
-    if (List.isEmpty pastPomodoros) then
+pomodoroLogEntries pomodoroLog =
+    if (List.isEmpty pomodoroLog) then
         pomodoroLogNoEntries
     else
         ul [ id "pomodoroLogEntries" ]
             (List.map
                 (\pomodoroLogEntry -> li [ class "pomodoroLogEntry" ] [ text pomodoroLogEntry ])
-                pastPomodoros
+                pomodoroLog
             )
 
 

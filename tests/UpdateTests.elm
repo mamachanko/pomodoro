@@ -208,14 +208,14 @@ describeUpdate =
             [ test "when it is recorded" <|
                 \() ->
                     { initialModel
-                        | pastPomodoros = [ "worked on stuff" ]
+                        | pomodoroLog = [ "worked on stuff" ]
                         , currentText = "worked on more stuff"
                         , showPomodoroLogInput = True
                     }
                         |> update RecordPomodoro
                         |> Expect.equal
                             ( { initialModel
-                                | pastPomodoros = [ "worked on more stuff", "worked on stuff" ]
+                                | pomodoroLog = [ "worked on more stuff", "worked on stuff" ]
                                 , currentText = ""
                                 , showPomodoroLogInput = False
                               }

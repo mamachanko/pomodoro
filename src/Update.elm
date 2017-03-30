@@ -28,7 +28,7 @@ update action model =
 
         RecordPomodoro ->
             ( { model
-                | pastPomodoros = model.currentText :: model.pastPomodoros
+                | pomodoroLog = model.currentText :: model.pomodoroLog
                 , currentText = ""
                 , showPomodoroLogInput = False
               }

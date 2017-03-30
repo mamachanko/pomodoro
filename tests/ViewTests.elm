@@ -93,13 +93,13 @@ describeView =
                         |> Query.count (Expect.equal 0)
             , test "shows session log" <|
                 \() ->
-                    view { initialModel | pastPomodoros = [ "worked on this", "worked on that" ] }
+                    view { initialModel | pomodoroLog = [ "worked on this", "worked on that" ] }
                         |> Query.fromHtml
                         |> Query.findAll [ class "pomodoroLogEntry" ]
                         |> Query.count (Expect.equal 2)
             , test "shows empty session log" <|
                 \() ->
-                    view { initialModel | pastPomodoros = [] }
+                    view { initialModel | pomodoroLog = [] }
                         |> Query.fromHtml
                         |> Query.findAll [ class "pomodoroLogEntry" ]
                         |> Query.count (Expect.equal 0)

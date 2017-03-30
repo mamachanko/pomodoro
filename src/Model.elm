@@ -14,7 +14,7 @@ defaults =
 initialModel : Model
 initialModel =
     { currentSession = unstartedPomodoro
-    , pastPomodoros = []
+    , pomodoroLog = []
     , currentText = ""
     , showPomodoroLogInput = False
     }
@@ -22,7 +22,7 @@ initialModel =
 
 type alias Model =
     { currentSession : Session
-    , pastPomodoros : List String
+    , pomodoroLog : List String
     , currentText : String
     , showPomodoroLogInput : Bool
     }

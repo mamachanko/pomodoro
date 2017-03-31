@@ -5,6 +5,7 @@ import UpdateTests exposing (..)
 import SubscriptionsTests exposing (..)
 import FormattingTests exposing (..)
 import Test exposing (..)
+import Timer.Tests
 
 
 all : Test
@@ -14,4 +15,5 @@ all =
         , describeUpdate
         , describeSubscriptions
         , describeFormatting
+        , Timer.Tests.all
         ]

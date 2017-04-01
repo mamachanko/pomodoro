@@ -3,10 +3,10 @@ module Tests exposing (..)
 import ViewTests exposing (..)
 import UpdateTests exposing (..)
 import SubscriptionsTests exposing (..)
-import FormattingTests exposing (..)
 import Test exposing (..)
 import Timer.Tests
 import Notifications.Tests
+import Log.Tests
 
 
 all : Test
@@ -15,7 +15,7 @@ all =
         [ describeView
         , describeUpdate
         , describeSubscriptions
-        , describeFormatting
         , Timer.Tests.all
         , Notifications.Tests.all
+        , Log.Tests.all
         ]

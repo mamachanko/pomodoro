@@ -1,40 +1,38 @@
 port module Notifications
     exposing
         ( enableDesktopNotifications
-        , notifyEndOfPomodoro
-        , notifyEndOfBreak
+        , notify
+        , sendNotification
+        , ringBell
         )
 
 
 enableDesktopNotifications =
-    requestPermissions ""
-
-
-notifyEndOfPomodoro =
-    Cmd.batch
-        [ notify "It's break-y time."
-        , ringBell ""
-        ]
-
-
-notifyEndOfBreak =
-    Cmd.batch
-        [ notify "Ora di pomodoro."
-        , ringBell ""
-        ]
+    requestPermissionsPort ""
 
 
 notify message =
-    triggerNotification message
+    Cmd.batch
+        [ sendNotification message
+        , ringBell
+        ]
 
 
-port requestPermissions : String -> Cmd action
+sendNotification message =
+    sendNotificationPort message
 
 
-port triggerNotification : String -> Cmd action
+ringBell =
+    ringBellPort ""
 
 
-port ringBell : String -> Cmd action
+port requestPermissionsPort : String -> Cmd action
 
 
-port updatePomodoroLog : String -> Cmd action
+port sendNotificationPort : String -> Cmd action
+
+
+port ringBellPort : String -> Cmd action
+
+
+port updatePomodoroLogPort : String -> Cmd action

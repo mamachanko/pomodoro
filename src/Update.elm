@@ -101,10 +101,10 @@ finishedSession model finishedSessionType =
 endOfSessionNotification sessionType =
     case sessionType of
         Pomodoro ->
-            Notifications.notifyEndOfPomodoro
+            Notifications.notify "It's break-y time."
 
         _ ->
-            Notifications.notifyEndOfBreak
+            Notifications.notify "Ora di pomodoro."
 
 
 activeSession model activeSessionType remainder =

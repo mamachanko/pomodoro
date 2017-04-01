@@ -164,10 +164,10 @@ endOfSessionNotification : SessionType -> Cmd action
 endOfSessionNotification sessionType =
     case sessionType of
         Pomodoro ->
-            Notifications.notifyEndOfPomodoro
+            Notifications.notify "It's break-y time."
 
         _ ->
-            Notifications.notifyEndOfBreak
+            Notifications.notify "Ora di pomodoro."
 
 
 activeSession : Model -> SessionType -> Remainder -> ( Model, Cmd action )

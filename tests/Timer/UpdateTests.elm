@@ -32,7 +32,7 @@ all =
                         |> update tick
                         |> Expect.equal
                             ( Over Pomodoro 0
-                            , Notifications.notifyEndOfPomodoro
+                            , Notifications.notify "It's break-y time."
                             )
             , test "when it is running over" <|
                 \() ->
@@ -74,7 +74,7 @@ all =
                         |> update tick
                         |> Expect.equal
                             ( Over ShortBreak 0
-                            , Notifications.notifyEndOfBreak
+                            , Notifications.notify "Ora di pomodoro."
                             )
             , test "when it is running over" <|
                 \() ->
@@ -116,7 +116,7 @@ all =
                         |> update tick
                         |> Expect.equal
                             ( Over LongBreak 0
-                            , Notifications.notifyEndOfBreak
+                            , Notifications.notify "Ora di pomodoro."
                             )
             , test "when it is running over" <|
                 \() ->

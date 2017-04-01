@@ -40,7 +40,7 @@ describeUpdate =
                                 | currentSession = (Over Pomodoro 0)
                                 , showPomodoroLogInput = True
                               }
-                            , Notifications.notifyEndOfPomodoro
+                            , Notifications.notify "It's break-y time."
                             )
             , test "when it is running over" <|
                 \() ->
@@ -92,7 +92,7 @@ describeUpdate =
                             ( { initialModel
                                 | currentSession = (Over ShortBreak 0)
                               }
-                            , Notifications.notifyEndOfBreak
+                            , Notifications.notify "Ora di pomodoro."
                             )
             , test "when it is running over" <|
                 \() ->
@@ -144,7 +144,7 @@ describeUpdate =
                             ( { initialModel
                                 | currentSession = (Over LongBreak 0)
                               }
-                            , Notifications.notifyEndOfBreak
+                            , Notifications.notify "Ora di pomodoro."
                             )
             , test "when it is running over" <|
                 \() ->

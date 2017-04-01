@@ -1,21 +1,17 @@
 module Notifications.Tests exposing (all)
 
-import Notifications
+import Notifications.ViewTests
+import Notifications.UpdateTests
+import Notifications.NotifyTests
+import Notifications.SubscriptionsTests
 import Test exposing (..)
 import Expect
 
 
 all =
     describe "Notifications"
-        [ describe "notify"
-            [ test "should send notification and ring bell" <|
-                \() ->
-                    Notifications.notify "hello"
-                        |> Expect.equal
-                            (Cmd.batch
-                                [ Notifications.sendNotification "hello"
-                                , Notifications.ringBell
-                                ]
-                            )
-            ]
+        [ Notifications.ViewTests.all
+        , Notifications.NotifyTests.all
+        , Notifications.UpdateTests.all
+        , Notifications.SubscriptionsTests.all
         ]

@@ -9,7 +9,7 @@ import Expect
 
 all : Test
 all =
-    describe "update"
+    describe "Timer.update"
         [ describe "Pomodoro" <|
             [ test "when it starts" <|
                 \() ->

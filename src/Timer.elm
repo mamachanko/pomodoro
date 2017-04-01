@@ -1,8 +1,12 @@
 module Timer exposing (..)
 
 import Notifications
+import Format exposing (formatTime)
 import Time
 import Keyboard
+import Html exposing (Html, div, td, text, input, button, h1, h2, ul, li)
+import Html.Attributes exposing (class, id, type_, value, style)
+import Html.Events exposing (onClick, onInput)
 
 
 defaults =
@@ -183,3 +187,92 @@ countDown =
 countUp : Float -> Float
 countUp =
     (+) Time.second
+
+
+subscriptions : Model -> Sub Action
+subscriptions model =
+    let
+        keyPresses =
+            Keyboard.presses KeyboardEvent
+
+        seconds =
+            Time.every Time.second Tick
+    in
+        case model of
+            Inactive _ _ ->
+                keyPresses
+
+            _ ->
+                Sub.batch [ seconds, keyPresses ]
+
+
+view : Model -> Html Action
+view model =
+    div [ id "timer" ]
+        [ time model
+        , timerControls
+        , timerShortcuts
+        ]
+
+
+timerShortcuts =
+    div [ id "timerShortcuts" ]
+        [ div [] [ text "alt+p" ]
+        , div [] [ text "alt+s" ]
+        , div [] [ text "alt+l" ]
+        ]
+
+
+time session =
+    div [ id "time" ] [ text (formatSession session) ]
+
+
+timerControls =
+    div [ id "timerControls" ]
+        [ pomodoroButton
+        , shortBreakButton
+        , longBreakButton
+        ]
+
+
+pomodoroButton =
+    div []
+        [ button
+            [ id "startPomodoro"
+            , onClick StartPomodoro
+            ]
+            [ text "Pomodoro" ]
+        ]
+
+
+shortBreakButton =
+    div []
+        [ button
+            [ id "startShortBreak"
+            , onClick StartShortBreak
+            ]
+            [ text "Short break" ]
+        ]
+
+
+longBreakButton =
+    div []
+        [ button
+            [ id "startLongBreak"
+            , onClick StartLongBreak
+            ]
+            [ text "Long break" ]
+        ]
+
+
+formatSession : Model -> String
+formatSession model =
+    case model of
+        Active _ time ->
+            formatTime time
+
+        Inactive _ time ->
+            formatTime time
+
+        Over _ time ->
+            "-" ++ (formatTime time)

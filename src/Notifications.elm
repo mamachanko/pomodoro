@@ -1,20 +1,8 @@
-port module Notifications
-    exposing
-        ( enableDesktopNotifications
-        , notify
-        , sendNotification
-        , ringBell
-        , init
-        , noAction
-        , view
-        , update
-        , subscriptions
-        )
+port module Notifications exposing (..)
 
 import Html exposing (Html, button, div, text)
 import Html.Attributes exposing (id)
 import Html.Events exposing (onClick)
-import Subscriptions exposing (subscriptions)
 
 
 init =
@@ -26,18 +14,14 @@ type Model
 
 
 type Action
-    = NoOp
-    | EnableDesktopNotifications
-
-
-noAction : Action
-noAction =
-    NoOp
+    = EnableDesktopNotifications
 
 
 update : Action -> Model -> ( Model, Cmd Action )
 update action model =
-    model ! []
+    case action of
+        EnableDesktopNotifications ->
+            model ! [ enableDesktopNotifications ]
 
 
 subscriptions : Model -> Sub action

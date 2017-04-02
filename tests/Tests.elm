@@ -1,20 +1,16 @@
 module Tests exposing (..)
 
-import ViewTests exposing (..)
-import UpdateTests exposing (..)
-import SubscriptionsTests exposing (..)
 import Test exposing (..)
 import Timer.Tests
 import Notifications.Tests
 import Log.Tests
+import App.Tests
 
 
 all : Test
 all =
     describe "Pomodoro"
-        [ describeView
-        , describeUpdate
-        , describeSubscriptions
+        [ App.Tests.all
         , Timer.Tests.all
         , Notifications.Tests.all
         , Log.Tests.all

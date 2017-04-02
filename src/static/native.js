@@ -2,14 +2,14 @@ console.log("Pomodoro");
 
 const pomodoroLogKey = 'pomodoroLog';
 
-var Pomodoro = Elm.Pomodoro.fullscreen(getPomodoroLog());
+var App = Elm.App.fullscreen(getPomodoroLog());
 
-Pomodoro.ports.ringBellPort.subscribe(function(){
+App.ports.ringBellPort.subscribe(function(){
   console.log("ringing bell");
   ringBell();
 });
 
-Pomodoro.ports.requestPermissionsPort.subscribe(function(){
+App.ports.requestPermissionsPort.subscribe(function(){
   console.log("requesting notification permission");
   Notification.requestPermission().then(
       function(permission) {
@@ -18,12 +18,12 @@ Pomodoro.ports.requestPermissionsPort.subscribe(function(){
   );
 });
 
-Pomodoro.ports.triggerNotificationPort.subscribe(function(message){
+App.ports.sendNotificationPort.subscribe(function(message){
   console.log("triggering notification");
   new Notification(message);
 });
 
-Pomodoro.ports.updatePomodoroLogPort.subscribe(function(pomodoroLog) {
+App.ports.updatePomodoroLogPort.subscribe(function(pomodoroLog) {
   updatePomodoroLog(pomodoroLog);
 });
 

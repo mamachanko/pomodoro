@@ -1,7 +1,6 @@
 module Timer exposing (..)
 
 import Notifications
-import Format exposing (formatTime)
 import Time
 import Keyboard
 import Html exposing (Html, div, td, text, input, button, h1, h2, ul, li)

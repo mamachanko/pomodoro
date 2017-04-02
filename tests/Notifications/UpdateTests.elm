@@ -1,15 +1,15 @@
 module Notifications.UpdateTests exposing (..)
 
 import Notifications exposing (..)
-import Test exposing (..)
 import Expect
+import Test exposing (..)
 
 
 all : Test
 all =
     describe "Notifications.update"
-        [ test "should do nothing" <|
+        [ test "should request to enable desktop notifications" <|
             \() ->
-                update noAction init
-                    |> Expect.equal (init ! [])
+                update EnableDesktopNotifications init
+                    |> Expect.equal (init ! [ enableDesktopNotifications ])
         ]

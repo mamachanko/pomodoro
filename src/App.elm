@@ -1,4 +1,4 @@
-module App exposing (init, update, subscriptions, view, Action(..))
+module App exposing (init, initWithFlags, update, subscriptions, view, Action(..))
 
 import Log
 import Notifications

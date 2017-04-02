@@ -1,6 +1,6 @@
 module App.Tests exposing (..)
 
-import App exposing (init, update, subscriptions, view, Action(ActionForNotifications, ActionForTimer, ActionForLog))
+import App exposing (init, initWithFlags, update, subscriptions, view, Action(ActionForNotifications, ActionForTimer, ActionForLog))
 import Expect
 import Log
 import Notifications
@@ -22,6 +22,21 @@ all =
                             , log = Log.init
                             , notifications = Notifications.init
                             }
+            ]
+        , describe ".initWithFlags" <|
+            [ test "should initialise log" <|
+                \() ->
+                    let
+                        initialLog =
+                            Log.init
+                    in
+                        initWithFlags [ "this", "that" ]
+                            |> Expect.equal
+                                ({ init
+                                    | log = { initialLog | log = [ "this", "that" ] }
+                                 }
+                                    ! []
+                                )
             ]
         , describe ".update" <|
             [ test "should update timer" <|

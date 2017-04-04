@@ -1,6 +1,6 @@
 module Log.SubscriptionsTests exposing (..)
 
-import Log exposing (..)
+import App exposing (..)
 import Test exposing (..)
 import Expect
 
@@ -10,6 +10,6 @@ all =
     describe "Log.subscriptions"
         [ test "should listen to nothing" <|
             \() ->
-                subscriptions init
+                subscriptionsLog init.log
                     |> Expect.equal Sub.none
         ]

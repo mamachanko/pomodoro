@@ -1,6 +1,6 @@
 module Timer.FormattingTests exposing (..)
 
-import Timer exposing (formatTime)
+import App exposing (..)
 import Time
 import Expect
 import Test exposing (..)

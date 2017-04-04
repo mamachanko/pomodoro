@@ -1,6 +1,6 @@
 module Notifications.SubscriptionsTests exposing (..)
 
-import Notifications exposing (..)
+import App exposing (..)
 import Test exposing (..)
 import Expect
 
@@ -10,6 +10,6 @@ all =
     describe "Notifications.subscriptions"
         [ test "should listen to nothing" <|
             \() ->
-                subscriptions init
+                subscriptionsNotifications initNotifications
                     |> Expect.equal Sub.none
         ]

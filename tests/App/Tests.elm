@@ -1,11 +1,8 @@
 module App.Tests exposing (..)
 
-import App exposing (init, initWithFlags, update, subscriptions, view, Action(ActionForNotifications, ActionForTimer, ActionForLog))
+import App exposing (..)
 import Expect
-import Log
-import Notifications
 import Test exposing (..)
-import Timer
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (id, tag, text, attribute, class)
 
@@ -18,9 +15,9 @@ all =
                 \() ->
                     init
                         |> Expect.equal
-                            { timer = Timer.init
-                            , log = Log.init
-                            , notifications = Notifications.init
+                            { timer = initTimer
+                            , log = initLog
+                            , notifications = initNotifications
                             }
             ]
         , describe ".initWithFlags" <|
@@ -28,7 +25,7 @@ all =
                 \() ->
                     let
                         initialLog =
-                            Log.init
+                            initLog
                     in
                         initWithFlags [ "this", "that" ]
                             |> Expect.equal
@@ -43,34 +40,34 @@ all =
                 \() ->
                     let
                         ( newTimer, cmds ) =
-                            Timer.update Timer.StartPomodoro Timer.init
+                            updateTimer StartPomodoro initTimer
 
                         newCmds =
-                            Cmd.map ActionForTimer cmds
+                            cmds
                     in
-                        update (ActionForTimer Timer.StartPomodoro) init
+                        update StartPomodoro init
                             |> Expect.equal
                                 ( { init | timer = newTimer }, newCmds )
             , test "should update log" <|
                 \() ->
                     let
                         ( newLog, cmds ) =
-                            Log.update Log.RecordPomodoro Log.init
+                            updateLog RecordPomodoro initLog
 
                         newCmds =
-                            Cmd.map ActionForLog cmds
+                            cmds
                     in
-                        update (ActionForLog Log.RecordPomodoro) init
+                        update RecordPomodoro init
                             |> Expect.equal
                                 ( { init | log = newLog }, newCmds )
             , test "should update notifications" <|
                 \() ->
                     let
                         ( newNotifications, cmds ) =
-                            Notifications.update Notifications.EnableDesktopNotifications Notifications.init
+                            updateNotifications EnableDesktopNotifications initNotifications
 
                         newCmds =
-                            Cmd.map ActionForNotifications cmds
+                            cmds
                     in
                         update (ActionForNotifications Notifications.EnableDesktopNotifications) init
                             |> Expect.equal
@@ -79,7 +76,7 @@ all =
         , describe ".view" <|
             [ test "should display timer" <|
                 \() ->
-                    view { init | timer = Timer.freshPomodoro }
+                    view { init | timer = freshPomodoro }
                         |> Query.fromHtml
                         |> Query.find [ id "time" ]
                         |> Query.has [ text ("25:00") ]
@@ -102,9 +99,9 @@ all =
                     subscriptions init
                         |> Expect.equal
                             (Sub.batch
-                                [ Sub.map ActionForTimer (Timer.subscriptions init.timer)
-                                , Sub.map ActionForLog (Log.subscriptions init.log)
-                                , Sub.map ActionForNotifications (Notifications.subscriptions init.notifications)
+                                [ subscriptionsTimer init.timer
+                                , subscriptionsLog init.log
+                                , subscriptionsNotifications init.notifications
                                 ]
                             )
             ]

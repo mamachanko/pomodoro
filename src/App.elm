@@ -1,4 +1,4 @@
-port module App exposing (main)
+port module App exposing (..)
 
 import Time
 import Keyboard
@@ -14,6 +14,7 @@ init =
     , notifications = initNotifications
     }
 
+
 initWithFlags : List String -> ( Model, Cmd msg )
 initWithFlags log =
     let
@@ -25,9 +26,11 @@ initWithFlags log =
     in
         ( { init | log = loadedLog }, Cmd.none )
 
+
 initTimer : TimerModel
 initTimer =
     unstartedPomodoro
+
 
 initLog : LogModel
 initLog =
@@ -35,9 +38,11 @@ initLog =
     , currentInput = ""
     }
 
-initNotifications: NotificationsModel
+
+initNotifications : NotificationsModel
 initNotifications =
     Nothing
+
 
 timerDefaults =
     { pomodoro = Time.minute * 25
@@ -51,6 +56,7 @@ type alias Model =
     , log : LogModel
     , notifications : NotificationsModel
     }
+
 
 type TimerModel
     = Active SessionType Remainder
@@ -77,8 +83,10 @@ type alias LogModel =
     , currentInput : String
     }
 
+
 type NotificationsModel
     = Nothing
+
 
 type Action
     = RecordPomodoro
@@ -143,47 +151,47 @@ tick =
 
 update : Action -> Model -> ( Model, Cmd Action )
 update action model =
-  let
-   {timer, log, notifications} =
-     model
-  in
-    case action of
-        TextInput textInput ->
-          let
-            newLog =
-              {log | currentInput = textInput }
-          in
+    let
+        { timer, log, notifications } =
+            model
+    in
+        case action of
+            TextInput textInput ->
+                let
+                    newLog =
+                        { log | currentInput = textInput }
+                in
+                    { model | log = newLog } ! []
 
-            { model | log = newLog } ! []
+            RecordPomodoro ->
+                let
+                    newLog =
+                        { log | log = log.currentInput :: log.log, currentInput = "" }
+                in
+                    { model | log = newLog } ! []
 
-        RecordPomodoro ->
-          let
-            newLog =
-              {log | log = log.currentInput :: log.log, currentInput = "" }
-          in
-            { model | log = newLog } ! []
+            EnableDesktopNotifications ->
+                model ! [ enableDesktopNotifications ]
 
-        EnableDesktopNotifications ->
-            model ! [ enableDesktopNotifications ]
+            StartPomodoro ->
+                { model | timer = freshPomodoro } ! []
 
-        StartPomodoro ->
-            {model|timer=freshPomodoro}![]
+            StartShortBreak ->
+                { model | timer = freshShortBreak } ! []
 
-        StartShortBreak ->
-            {model|timer=freshShortBreak}![]
+            StartLongBreak ->
+                { model | timer = freshLongBreak } ! []
 
-        StartLongBreak ->
-            {model|timer=freshLongBreak}![]
+            KeyboardEvent keycode ->
+                { model | timer = updateKeyboardEvent timer keycode } ! []
 
-        KeyboardEvent keycode ->
-            {model|timer=updateKeyboardEvent timer keycode} ! []
+            Tick time ->
+                let
+                    ( newTimer, cmd ) =
+                        updateTick timer time
+                in
+                    { model | timer = newTimer } ! [ cmd ]
 
-        Tick time ->
-            let
-              (newTimer, cmd) =
-                updateTick timer time
-            in
-              {model|timer=newTimer} ! [cmd]
 
 updateTick : TimerModel -> Time.Time -> ( TimerModel, Cmd action )
 updateTick model time =
@@ -228,7 +236,7 @@ updateKeyboardEvent model keycode =
 
 finishedSession : TimerModel -> SessionType -> ( TimerModel, Cmd action )
 finishedSession model finishedSessionType =
-    Over finishedSessionType 0 ! [endOfSessionNotification finishedSessionType]
+    Over finishedSessionType 0 ! [ endOfSessionNotification finishedSessionType ]
 
 
 endOfSessionNotification : SessionType -> Cmd action
@@ -263,6 +271,7 @@ subscriptions model =
         , subscriptionsLog model.log
         , subscriptionsNotifications model.notifications
         ]
+
 
 subscriptionsTimer : TimerModel -> Sub Action
 subscriptionsTimer model =
@@ -464,7 +473,6 @@ pomodoroLogEntries { log } =
 
 pomodoroLogNoEntries =
     div [ id "pomodoroLogEntriesEmpty" ] [ text "<no logged Pomodoros yet>" ]
-
 
 
 viewNotifications : NotificationsModel -> Html Action

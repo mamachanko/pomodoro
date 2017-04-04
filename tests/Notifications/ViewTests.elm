@@ -1,6 +1,6 @@
 module Notifications.ViewTests exposing (..)
 
-import Notifications exposing (..)
+import App exposing (..)
 import Test exposing (..)
 import Expect
 import Test.Html.Query as Query
@@ -12,7 +12,7 @@ all =
     describe "Notifications.view"
         [ test "should display a button to enable desktop notifications" <|
             \() ->
-                view init
+                viewNotifications initNotifications
                     |> Query.fromHtml
                     |> Query.find [ tag "button", id "enableDesktopNotifications" ]
                     |> Query.has [ text "Enable desktop notifications" ]

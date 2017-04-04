@@ -1,6 +1,6 @@
 module Timer.SubscriptionsTests exposing (all)
 
-import Timer exposing (..)
+import App exposing (..)
 import Time
 import Keyboard
 import Test exposing (..)
@@ -12,11 +12,11 @@ all =
     describe "Timer.subscriptions"
         [ test "should listen to keyboard presses for shortcuts" <|
             \() ->
-                subscriptions init
+                subscriptionsTimer initTimer
                     |> Expect.equal (Keyboard.presses KeyboardEvent)
         , test "should listen to ticks for an active session" <|
             \() ->
-                subscriptions freshPomodoro
+                subscriptionsTimer freshPomodoro
                     |> Expect.equal
                         (Sub.batch
                             [ Time.every Time.second Tick
@@ -25,7 +25,7 @@ all =
                         )
         , test "should listen to ticks for an overrunning sessions" <|
             \() ->
-                subscriptions (Over Pomodoro Time.second)
+                subscriptionsTimer (Over Pomodoro Time.second)
                     |> Expect.equal
                         (Sub.batch
                             [ Time.every Time.second Tick

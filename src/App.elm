@@ -151,6 +151,44 @@ tick =
 
 update : Action -> Model -> ( Model, Cmd Action )
 update action model =
+    case action of
+        TextInput textInput ->
+            updateLog action model
+
+        RecordPomodoro ->
+            updateLog action model
+
+        EnableDesktopNotifications ->
+            model ! [ enableDesktopNotifications ]
+
+        StartPomodoro ->
+            updateTimer action model
+
+        StartShortBreak ->
+            updateTimer action model
+
+        StartLongBreak ->
+            updateTimer action model
+
+        KeyboardEvent _ ->
+            updateTimer action model
+
+        Tick _ ->
+            updateTimer action model
+
+
+updateNotifications : Action -> Model -> ( Model, Cmd action )
+updateNotifications action model =
+    case action of
+        EnableDesktopNotifications ->
+            model ! [ enableDesktopNotifications ]
+
+        _ ->
+            model ! []
+
+
+updateLog : Action -> Model -> ( Model, Cmd action )
+updateLog action model =
     let
         { timer, log, notifications } =
             model
@@ -170,9 +208,17 @@ update action model =
                 in
                     { model | log = newLog } ! []
 
-            EnableDesktopNotifications ->
-                model ! [ enableDesktopNotifications ]
+            _ ->
+                model ! []
 
+
+updateTimer : Action -> Model -> ( Model, Cmd action )
+updateTimer action model =
+    let
+        { timer, log, notifications } =
+            model
+    in
+        case action of
             StartPomodoro ->
                 { model | timer = freshPomodoro } ! []
 
@@ -191,6 +237,9 @@ update action model =
                         updateTick timer time
                 in
                     { model | timer = newTimer } ! [ cmd ]
+
+            _ ->
+                model ! []
 
 
 updateTick : TimerModel -> Time.Time -> ( TimerModel, Cmd action )

@@ -12,83 +12,83 @@ all =
         [ describe "Pomodoro" <|
             [ test "when it starts" <|
                 \() ->
-                    updateTimer StartPomodoro initTimer
+                    updateTimer StartPomodoro init
                         |> Expect.equal
-                            ( freshPomodoro
+                            ( { init | timer = freshPomodoro }
                             , Cmd.none
                             )
             , test "when it is counting down" <|
                 \() ->
-                    (Active Pomodoro <| Time.minute * 2 + Time.second * 24)
+                    { init | timer = (Active Pomodoro <| Time.minute * 2 + Time.second * 24) }
                         |> updateTimer tick
                         |> Expect.equal
-                            ( Active Pomodoro <| Time.minute * 2 + Time.second * 23
+                            ( { init | timer = Active Pomodoro <| Time.minute * 2 + Time.second * 23 }
                             , Cmd.none
                             )
             , test "when it is up" <|
                 \() ->
-                    (Active Pomodoro <| Time.second * 1)
+                    { init | timer = (Active Pomodoro <| Time.second * 1) }
                         |> updateTimer tick
                         |> Expect.equal
-                            ( Over Pomodoro 0
+                            ( { init | timer = Over Pomodoro 0 }
                             , notify "It's break-y time."
                             )
             , test "when it is running over" <|
                 \() ->
-                    Over Pomodoro 0
+                    { init | timer = Over Pomodoro 0 }
                         |> updateTimer tick
                         |> Expect.equal
-                            ( Over Pomodoro Time.second
+                            ( { init | timer = Over Pomodoro Time.second }
                             , Cmd.none
                             )
             , test "when it continues to run over" <|
                 \() ->
-                    (Over Pomodoro <| Time.second * 59)
+                    { init | timer = (Over Pomodoro <| Time.second * 59) }
                         |> updateTimer tick
                         |> Expect.equal
-                            ( Over Pomodoro Time.minute
+                            ( { init | timer = Over Pomodoro Time.minute }
                             , Cmd.none
                             )
             ]
         , describe "short break" <|
             [ test "when it starts" <|
                 \() ->
-                    unstartedShortBreak
+                    { init | timer = unstartedShortBreak }
                         |> updateTimer StartShortBreak
                         |> Expect.equal
-                            ( freshShortBreak
+                            ( { init | timer = freshShortBreak }
                             , Cmd.none
                             )
             , test "when it is counting down" <|
                 \() ->
-                    (Active ShortBreak <| Time.minute * 2 + Time.second * 24)
+                    { init | timer = (Active ShortBreak <| Time.minute * 2 + Time.second * 24) }
                         |> updateTimer tick
                         |> Expect.equal
-                            ( Active ShortBreak <| Time.minute * 2 + Time.second * 23
+                            ( { init | timer = (Active ShortBreak <| Time.minute * 2 + Time.second * 23) }
                             , Cmd.none
                             )
             , test "when it is up" <|
                 \() ->
-                    (Active ShortBreak <| Time.second * 1)
+                    { init | timer = (Active ShortBreak <| Time.second * 1) }
                         |> updateTimer tick
                         |> Expect.equal
-                            ( Over ShortBreak 0
+                            ( { init | timer = Over ShortBreak 0 }
                             , notify "Ora di pomodoro."
                             )
             , test "when it is running over" <|
                 \() ->
-                    Over ShortBreak 0
+                    { init | timer = Over ShortBreak 0 }
                         |> updateTimer tick
                         |> Expect.equal
-                            ( Over ShortBreak Time.second
+                            ( { init | timer = Over ShortBreak Time.second }
                             , Cmd.none
                             )
             , test "when it continues to run over" <|
                 \() ->
-                    (Over ShortBreak <| Time.second * 59)
+                    { init | timer = (Over ShortBreak <| Time.second * 59) }
                         |> updateTimer tick
                         |> Expect.equal
-                            ( Over ShortBreak Time.minute
+                            ( { init | timer = Over ShortBreak Time.minute }
                             , Cmd.none
                             )
             ]

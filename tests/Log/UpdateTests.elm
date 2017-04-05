@@ -10,9 +10,12 @@ all =
     describe "Log.update"
         [ test "should record a Pomodoro" <|
             \() ->
-                { initLog
-                    | log = [ "worked on stuff" ]
-                    , currentInput = "worked on more stuff"
+                { init
+                    | log =
+                        { initLog
+                            | log = [ "worked on stuff" ]
+                            , currentInput = "worked on more stuff"
+                        }
                 }
                     |> updateLog RecordPomodoro
                     |> Expect.equal

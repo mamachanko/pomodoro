@@ -2,6 +2,8 @@ module Timer.UpdateTests exposing (all)
 
 import App exposing (..)
 import Time
+import Date
+import Task
 import Test exposing (..)
 import Expect
 
@@ -26,13 +28,13 @@ all =
                             , Cmd.none
                             )
             , test "when it is up" <|
-                \() ->
-                    { init | timer = (Active Pomodoro <| Time.second * 1) }
-                        |> updateTimer tick
-                        |> Expect.equal
-                            ( { init | timer = Over Pomodoro 0 }
-                            , notify "It's break-y time."
-                            )
+                let
+                    ( model, cmd ) =
+                        updateTimer tick { init | timer = (Active Pomodoro <| Time.second * 1) }
+                in
+                    \() ->
+                        Expect.equal { init | timer = Over Pomodoro 0 } model
+              -- it should also notify and record a Pomodoro, but Task cannot be tested
             , test "when it is running over" <|
                 \() ->
                     { init | timer = Over Pomodoro 0 }
@@ -72,8 +74,8 @@ all =
                     { init | timer = (Active ShortBreak <| Time.second * 1) }
                         |> updateTimer tick
                         |> Expect.equal
-                            ( { init | timer = Over ShortBreak 0 }
-                            , notify "Ora di pomodoro."
+                            ({ init | timer = Over ShortBreak 0 }
+                                ! [ notify "Ora di pomodoro." ]
                             )
             , test "when it is running over" <|
                 \() ->
@@ -114,8 +116,8 @@ all =
                     { init | timer = (Active LongBreak <| Time.second * 1) }
                         |> updateTimer tick
                         |> Expect.equal
-                            ( { init | timer = Over LongBreak 0 }
-                            , notify "Ora di pomodoro."
+                            ({ init | timer = Over LongBreak 0 }
+                                ! [ notify "Ora di pomodoro." ]
                             )
             , test "when it is running over" <|
                 \() ->

@@ -1,6 +1,8 @@
 port module App exposing (..)
 
+import Task
 import Time
+import Date
 import Keyboard
 import Html exposing (Html, div, map, programWithFlags, h1, text, td, input, button, h1, h2, ul, li)
 import Html.Attributes exposing (class, id, type_, value, style)
@@ -17,14 +19,7 @@ init =
 
 initWithFlags : List String -> ( Model, Cmd msg )
 initWithFlags log =
-    let
-        initialLog =
-            initLog
-
-        loadedLog =
-            { initialLog | log = log }
-    in
-        ( { init | log = loadedLog }, Cmd.none )
+    init ! []
 
 
 initTimer : TimerModel
@@ -34,9 +29,7 @@ initTimer =
 
 initLog : LogModel
 initLog =
-    { log = []
-    , currentInput = ""
-    }
+    []
 
 
 initNotifications : NotificationsModel
@@ -79,8 +72,12 @@ type alias Overflow =
 
 
 type alias LogModel =
-    { log : List String
-    , currentInput : String
+    List Recorded
+
+
+type alias Recorded =
+    { date : Date.Date
+    , text : String
     }
 
 
@@ -89,8 +86,7 @@ type NotificationsModel
 
 
 type Action
-    = RecordPomodoro
-    | TextInput String
+    = RecordPomodoro Date.Date
     | EnableDesktopNotifications
     | StartPomodoro
     | StartShortBreak
@@ -152,10 +148,7 @@ tick =
 update : Action -> Model -> ( Model, Cmd Action )
 update action model =
     case action of
-        TextInput textInput ->
-            updateLog action model
-
-        RecordPomodoro ->
+        RecordPomodoro date ->
             updateLog action model
 
         EnableDesktopNotifications ->
@@ -194,19 +187,12 @@ updateLog action model =
             model
     in
         case action of
-            TextInput textInput ->
+            RecordPomodoro date ->
                 let
-                    newLog =
-                        { log | currentInput = textInput }
+                    recorded =
+                        Recorded date "Pomodoro"
                 in
-                    { model | log = newLog } ! []
-
-            RecordPomodoro ->
-                let
-                    newLog =
-                        { log | log = log.currentInput :: log.log, currentInput = "" }
-                in
-                    { model | log = newLog } ! []
+                    { model | log = recorded :: log } ! []
 
             _ ->
                 model ! []
@@ -242,7 +228,7 @@ updateTimer action model =
                 model ! []
 
 
-updateTick : TimerModel -> Time.Time -> ( TimerModel, Cmd action )
+updateTick : TimerModel -> Time.Time -> ( TimerModel, Cmd Action )
 updateTick model time =
     case model of
         Over sessionType overflow ->
@@ -255,7 +241,7 @@ updateTick model time =
             model ! []
 
 
-updateActiveSession : TimerModel -> SessionType -> Remainder -> ( TimerModel, Cmd action )
+updateActiveSession : TimerModel -> SessionType -> Remainder -> ( TimerModel, Cmd Action )
 updateActiveSession model sessionType remainder =
     let
         newRemainder =
@@ -283,19 +269,19 @@ updateKeyboardEvent model keycode =
             model
 
 
-finishedSession : TimerModel -> SessionType -> ( TimerModel, Cmd action )
+finishedSession : TimerModel -> SessionType -> ( TimerModel, Cmd Action )
 finishedSession model finishedSessionType =
-    ( Over finishedSessionType 0, endOfSessionNotification finishedSessionType )
+    let
+        cmds =
+            case finishedSessionType of
+                Pomodoro ->
+                    Cmd.batch [ Task.perform RecordPomodoro Date.now, notify "It's break-y time." ]
 
-
-endOfSessionNotification : SessionType -> Cmd action
-endOfSessionNotification sessionType =
-    case sessionType of
-        Pomodoro ->
-            notify "It's break-y time."
-
-        _ ->
-            notify "Ora di pomodoro."
+                _ ->
+                    notify "Ora di pomodoro."
+    in
+        Over finishedSessionType 0
+            ! [ cmds ]
 
 
 activeSession : TimerModel -> SessionType -> Remainder -> ( TimerModel, Cmd action )
@@ -479,43 +465,17 @@ viewLog : LogModel -> Html Action
 viewLog model =
     div [ id "pomodoroLog" ]
         [ h2 [] [ text "Pomodoro Log" ]
-        , pomodoroLogInputElements model
         , pomodoroLogEntries model
         ]
 
 
-pomodoroLogInputElements { currentInput } =
-    div [ id "pomodoroLogInput" ]
-        [ pomodoroLogInput currentInput
-        , pomodoroLogButton
-        ]
-
-
-pomodoroLogInput currentText =
-    input
-        [ id "pomodoroLogInputText"
-        , type_ "text"
-        , onInput TextInput
-        , value currentText
-        ]
-        []
-
-
-pomodoroLogButton =
-    button
-        [ id "pomodoroLogButton"
-        , onClick RecordPomodoro
-        ]
-        [ text "Log Pomodoro" ]
-
-
-pomodoroLogEntries { log } =
+pomodoroLogEntries log =
     if (List.isEmpty log) then
         pomodoroLogNoEntries
     else
         ul [ id "pomodoroLogEntries" ]
             (List.map
-                (\pomodoroLogEntry -> li [ class "pomodoroLogEntry" ] [ text pomodoroLogEntry ])
+                (\pomodoroLogEntry -> li [ class "pomodoroLogEntry" ] [ text pomodoroLogEntry.text ])
                 log
             )
 

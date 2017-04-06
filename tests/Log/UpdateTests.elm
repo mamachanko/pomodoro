@@ -1,5 +1,7 @@
 module Log.UpdateTests exposing (all)
 
+import Date
+import Time
 import App exposing (..)
 import Test exposing (..)
 import Expect
@@ -12,33 +14,16 @@ all =
             \() ->
                 { init
                     | log =
-                        { initLog
-                            | log = [ "worked on stuff" ]
-                            , currentInput = "worked on more stuff"
-                        }
+                        [ { date = Date.fromTime Time.second, text = "worked on stuff" } ]
                 }
-                    |> updateLog RecordPomodoro
+                    |> updateLog (RecordPomodoro <| Date.fromTime Time.second)
                     |> Expect.equal
-                        ( { init
+                        ({ init
                             | log =
-                                { initLog
-                                    | log = [ "worked on more stuff", "worked on stuff" ]
-                                    , currentInput = ""
-                                }
-                          }
-                        , Cmd.none
-                        )
-        , test "when there's text input" <|
-            \() ->
-                { init | log = { initLog | currentInput = "worked on " } }
-                    |> updateLog (TextInput "worked on stuff")
-                    |> Expect.equal
-                        ( { init
-                            | log =
-                                { initLog
-                                    | currentInput = "worked on stuff"
-                                }
-                          }
-                        , Cmd.none
+                                [ { date = Date.fromTime Time.second, text = "Pomodoro" }
+                                , { date = Date.fromTime Time.second, text = "worked on stuff" }
+                                ]
+                         }
+                            ! []
                         )
         ]

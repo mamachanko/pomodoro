@@ -1,8 +1,10 @@
 port module App exposing (..)
 
+import Task
 import Time
+import Date
 import Keyboard
-import Html exposing (Html, div, map, programWithFlags, h1, text, td, input, button, h1, h2, ul, li)
+import Html exposing (Html, div, map, program, h1, text, td, input, button, h1, h2, ul, li)
 import Html.Attributes exposing (class, id, type_, value, style)
 import Html.Events exposing (onClick, onInput)
 
@@ -15,16 +17,17 @@ init =
     }
 
 
-initWithFlags : List String -> ( Model, Cmd msg )
-initWithFlags log =
-    let
-        initialLog =
-            initLog
 
-        loadedLog =
-            { initialLog | log = log }
-    in
-        ( { init | log = loadedLog }, Cmd.none )
+-- initWithFlags : List Recorded -> ( Model, Cmd msg )
+-- initWithFlags log =
+--     let
+--         initialLog =
+--             initLog
+--
+--         loadedLog =
+--             { initialLog | log = log }
+--     in
+--         ( { init | log = loadedLog }, Cmd.none )
 
 
 initTimer : TimerModel
@@ -79,8 +82,14 @@ type alias Overflow =
 
 
 type alias LogModel =
-    { log : List String
+    { log : List Recorded
     , currentInput : String
+    }
+
+
+type alias Recorded =
+    { date : Date.Date
+    , text : String
     }
 
 
@@ -89,7 +98,7 @@ type NotificationsModel
 
 
 type Action
-    = RecordPomodoro
+    = RecordPomodoro Date.Date
     | TextInput String
     | EnableDesktopNotifications
     | StartPomodoro
@@ -155,7 +164,7 @@ update action model =
         TextInput textInput ->
             updateLog action model
 
-        RecordPomodoro ->
+        RecordPomodoro date ->
             updateLog action model
 
         EnableDesktopNotifications ->
@@ -201,10 +210,13 @@ updateLog action model =
                 in
                     { model | log = newLog } ! []
 
-            RecordPomodoro ->
+            RecordPomodoro date ->
                 let
+                    recorded =
+                        Recorded date "Pomodoro"
+
                     newLog =
-                        { log | log = log.currentInput :: log.log, currentInput = "" }
+                        { log | log = recorded :: log.log, currentInput = "" }
                 in
                     { model | log = newLog } ! []
 
@@ -479,34 +491,8 @@ viewLog : LogModel -> Html Action
 viewLog model =
     div [ id "pomodoroLog" ]
         [ h2 [] [ text "Pomodoro Log" ]
-        , pomodoroLogInputElements model
         , pomodoroLogEntries model
         ]
-
-
-pomodoroLogInputElements { currentInput } =
-    div [ id "pomodoroLogInput" ]
-        [ pomodoroLogInput currentInput
-        , pomodoroLogButton
-        ]
-
-
-pomodoroLogInput currentText =
-    input
-        [ id "pomodoroLogInputText"
-        , type_ "text"
-        , onInput TextInput
-        , value currentText
-        ]
-        []
-
-
-pomodoroLogButton =
-    button
-        [ id "pomodoroLogButton"
-        , onClick RecordPomodoro
-        ]
-        [ text "Log Pomodoro" ]
 
 
 pomodoroLogEntries { log } =
@@ -515,7 +501,7 @@ pomodoroLogEntries { log } =
     else
         ul [ id "pomodoroLogEntries" ]
             (List.map
-                (\pomodoroLogEntry -> li [ class "pomodoroLogEntry" ] [ text pomodoroLogEntry ])
+                (\pomodoroLogEntry -> li [ class "pomodoroLogEntry" ] [ text pomodoroLogEntry.text ])
                 log
             )
 
@@ -568,8 +554,8 @@ port updatePomodoroLogPort : String -> Cmd action
 
 
 main =
-    programWithFlags
-        { init = initWithFlags
+    program
+        { init = init ! []
         , view = view
         , update = update
         , subscriptions = subscriptions

@@ -2,6 +2,7 @@ module Timer.UpdateTests exposing (all)
 
 import App exposing (..)
 import Time
+import Date
 import Test exposing (..)
 import Expect
 
@@ -27,7 +28,9 @@ all =
                             )
             , test "when it is up" <|
                 \() ->
-                    { init | timer = (Active Pomodoro <| Time.second * 1) }
+                    { init
+                        | timer = (Active Pomodoro <| Time.second * 1)
+                    }
                         |> updateTimer tick
                         |> Expect.equal
                             ( { init | timer = Over Pomodoro 0 }

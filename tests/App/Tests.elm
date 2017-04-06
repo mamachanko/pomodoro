@@ -20,21 +20,21 @@ all =
                             , notifications = initNotifications
                             }
             ]
-        , describe ".initWithFlags" <|
-            [ test "should initialise log" <|
-                \() ->
-                    let
-                        initialLog =
-                            initLog
-                    in
-                        initWithFlags [ "this", "that" ]
-                            |> Expect.equal
-                                ({ init
-                                    | log = { initialLog | log = [ "this", "that" ] }
-                                 }
-                                    ! []
-                                )
-            ]
+          -- , describe ".initWithFlags" <|
+          --     [ test "should initialise log" <|
+          --         \() ->
+          --             let
+          --                 initialLog =
+          --                     initLog
+          --             in
+          --                 initWithFlags [ "this", "that" ]
+          --                     |> Expect.equal
+          --                         ({ init
+          --                             | log = { initialLog | log = [ "this", "that" ] }
+          --                          }
+          --                             ! []
+          --                         )
+          --     ]
         , describe ".update" <|
             [ test "should update timer" <|
                 \() ->

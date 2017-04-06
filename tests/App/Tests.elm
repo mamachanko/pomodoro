@@ -2,6 +2,8 @@ module App.Tests exposing (..)
 
 import App exposing (..)
 import Expect
+import Date
+import Time
 import Test exposing (..)
 import Test.Html.Query as Query
 import Test.Html.Selector exposing (id, tag, text, attribute, class)
@@ -41,7 +43,7 @@ all =
                     Expect.equal (update StartPomodoro init) (updateTimer StartPomodoro init)
             , test "should update log" <|
                 \() ->
-                    Expect.equal (update RecordPomodoro init) (updateLog RecordPomodoro init)
+                    Expect.equal (update (RecordPomodoro (Date.fromTime Time.second)) init) (updateLog (RecordPomodoro (Date.fromTime Time.second)) init)
             , test "should update notifications" <|
                 \() ->
                     Expect.equal (update EnableDesktopNotifications init) (updateNotifications EnableDesktopNotifications init)

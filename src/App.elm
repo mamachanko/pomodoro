@@ -37,9 +37,7 @@ initTimer =
 
 initLog : LogModel
 initLog =
-    { log = []
-    , currentInput = ""
-    }
+    []
 
 
 initNotifications : NotificationsModel
@@ -82,9 +80,7 @@ type alias Overflow =
 
 
 type alias LogModel =
-    { log : List Recorded
-    , currentInput : String
-    }
+    List Recorded
 
 
 type alias Recorded =
@@ -99,7 +95,6 @@ type NotificationsModel
 
 type Action
     = RecordPomodoro Date.Date
-    | TextInput String
     | EnableDesktopNotifications
     | StartPomodoro
     | StartShortBreak
@@ -161,9 +156,6 @@ tick =
 update : Action -> Model -> ( Model, Cmd Action )
 update action model =
     case action of
-        TextInput textInput ->
-            updateLog action model
-
         RecordPomodoro date ->
             updateLog action model
 
@@ -203,22 +195,12 @@ updateLog action model =
             model
     in
         case action of
-            TextInput textInput ->
-                let
-                    newLog =
-                        { log | currentInput = textInput }
-                in
-                    { model | log = newLog } ! []
-
             RecordPomodoro date ->
                 let
                     recorded =
                         Recorded date "Pomodoro"
-
-                    newLog =
-                        { log | log = recorded :: log.log, currentInput = "" }
                 in
-                    { model | log = newLog } ! []
+                    { model | log = recorded :: log } ! []
 
             _ ->
                 model ! []
@@ -254,7 +236,7 @@ updateTimer action model =
                 model ! []
 
 
-updateTick : TimerModel -> Time.Time -> ( TimerModel, Cmd action )
+updateTick : TimerModel -> Time.Time -> ( TimerModel, Cmd Action )
 updateTick model time =
     case model of
         Over sessionType overflow ->
@@ -267,7 +249,7 @@ updateTick model time =
             model ! []
 
 
-updateActiveSession : TimerModel -> SessionType -> Remainder -> ( TimerModel, Cmd action )
+updateActiveSession : TimerModel -> SessionType -> Remainder -> ( TimerModel, Cmd Action )
 updateActiveSession model sessionType remainder =
     let
         newRemainder =
@@ -295,12 +277,12 @@ updateKeyboardEvent model keycode =
             model
 
 
-finishedSession : TimerModel -> SessionType -> ( TimerModel, Cmd action )
+finishedSession : TimerModel -> SessionType -> ( TimerModel, Cmd Action )
 finishedSession model finishedSessionType =
-    ( Over finishedSessionType 0, endOfSessionNotification finishedSessionType )
+    Over finishedSessionType 0 ! [ endOfSessionNotification finishedSessionType, Task.perform RecordPomodoro Date.now ]
 
 
-endOfSessionNotification : SessionType -> Cmd action
+endOfSessionNotification : SessionType -> Cmd Action
 endOfSessionNotification sessionType =
     case sessionType of
         Pomodoro ->
@@ -495,7 +477,7 @@ viewLog model =
         ]
 
 
-pomodoroLogEntries { log } =
+pomodoroLogEntries log =
     if (List.isEmpty log) then
         pomodoroLogNoEntries
     else

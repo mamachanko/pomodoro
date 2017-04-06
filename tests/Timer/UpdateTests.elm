@@ -3,6 +3,7 @@ module Timer.UpdateTests exposing (all)
 import App exposing (..)
 import Time
 import Date
+import Task
 import Test exposing (..)
 import Expect
 
@@ -33,8 +34,8 @@ all =
                     }
                         |> updateTimer tick
                         |> Expect.equal
-                            ( { init | timer = Over Pomodoro 0 }
-                            , notify "It's break-y time."
+                            ({ init | timer = Over Pomodoro 0 }
+                                ! [ notify "It's break-y time.", Task.perform RecordPomodoro Date.now ]
                             )
             , test "when it is running over" <|
                 \() ->

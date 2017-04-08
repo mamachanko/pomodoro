@@ -12,12 +12,24 @@ import Test.Html.Selector exposing (id, tag, text, attribute, class)
 all : Test
 all =
     describe "Log.view"
-        [ test "should show log" <|
+        [ test "should show log entries" <|
+            let
+                log =
+                    [ { date = Date.fromTime 0, text = "worked on stuff" }
+                    , { date = Date.fromTime (Time.hour * 24), text = "worked on other stuff" }
+                    ]
+            in
+                \() ->
+                    viewLog log
+                        |> Query.fromHtml
+                        |> Query.findAll [ class "pomodoroLogEntry" ]
+                        |> Query.count (Expect.equal 2)
+        , test "should show log entry with date" <|
             \() ->
-                viewLog [ { date = Date.fromTime Time.second, text = "worked on this" }, { date = Date.fromTime Time.second, text = "worked on that" } ]
+                viewLog [ { date = Date.fromTime ((Time.hour * 24) * 180 + Time.hour * 2 + Time.minute * 15), text = "worked on stuff" } ]
                     |> Query.fromHtml
-                    |> Query.findAll [ class "pomodoroLogEntry" ]
-                    |> Query.count (Expect.equal 2)
+                    |> Query.find [ class "pomodoroLogEntry" ]
+                    |> Query.has [ text "30-06-1970 03:15: worked on stuff" ]
         , test "should show an empty session log" <|
             \() ->
                 viewLog []

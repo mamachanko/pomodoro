@@ -3,6 +3,7 @@ port module App exposing (..)
 import Task
 import Time
 import Date
+import Date.Format
 import Keyboard
 import Html exposing (Html, div, map, programWithFlags, h1, text, td, input, button, h1, h2, ul, li)
 import Html.Attributes exposing (class, id, type_, value, style)
@@ -474,10 +475,21 @@ pomodoroLogEntries log =
         pomodoroLogNoEntries
     else
         ul [ id "pomodoroLogEntries" ]
-            (List.map
-                (\pomodoroLogEntry -> li [ class "pomodoroLogEntry" ] [ text pomodoroLogEntry.text ])
-                log
-            )
+            (List.map pomodoroLogEntry log)
+
+
+pomodoroLogEntry : Recorded -> Html Action
+pomodoroLogEntry logEntry =
+    li
+        [ class "pomodoroLogEntry"
+        ]
+        [ text <| pomodoroLogEntryDate logEntry ++ ": " ++ logEntry.text
+        ]
+
+
+pomodoroLogEntryDate : Recorded -> String
+pomodoroLogEntryDate { date } =
+    Date.Format.format "%d-%m-%Y %H:%M" date
 
 
 pomodoroLogNoEntries =

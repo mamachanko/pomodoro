@@ -1,6 +1,7 @@
 port module App exposing (..)
 
 import Task
+import Dict
 import Time
 import Date
 import Date.Format
@@ -35,7 +36,7 @@ initLog =
 
 initNotifications : NotificationsModel
 initNotifications =
-    Nothing
+    None
 
 
 timerDefaults =
@@ -83,7 +84,7 @@ type alias Recorded =
 
 
 type NotificationsModel
-    = Nothing
+    = None
 
 
 type Action
@@ -471,11 +472,43 @@ viewLog model =
 
 
 pomodoroLogEntries log =
-    if (List.isEmpty log) then
-        pomodoroLogNoEntries
-    else
-        ul [ id "pomodoroLogEntries" ]
-            (List.map pomodoroLogEntry log)
+    -- if (List.isEmpty log) then
+    --     pomodoroLogNoEntries
+    -- else
+    ul [ id "pomodoroLogEntries" ]
+        -- (List.map pomodoroLogEntry log)
+        [ li
+            [ class "pomodoroLogDate"
+            ]
+            [ text "30-06-1970"
+            , ul [ class "pomodoroLogEntry" ] [ text "03:15: worked on stuff" ]
+            ]
+        ]
+
+
+groupByDate : LogModel -> List ( String, List Recorded )
+groupByDate log =
+    groupByDate_ log Dict.empty
+
+
+groupByDate_ : LogModel -> Dict.Dict String (List Recorded) -> List ( String, List Recorded )
+groupByDate_ log result =
+    case log of
+        entry :: remainder ->
+            groupByDate_ remainder <| Dict.update (Date.Format.format "%d-%m-%Y" entry.date) (addEntry entry) result
+
+        [] ->
+            Dict.toList result
+
+
+addEntry : Recorded -> Maybe (List Recorded) -> Maybe (List Recorded)
+addEntry entry list =
+    case list of
+        Just stuff ->
+            Just <| List.sortBy (\{ date } -> Date.toTime date) (entry :: stuff)
+
+        Nothing ->
+            Just [ entry ]
 
 
 pomodoroLogEntry : Recorded -> Html Action

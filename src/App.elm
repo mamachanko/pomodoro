@@ -87,7 +87,6 @@ type NotificationsModel
 
 type Action
     = RecordPomodoro Date.Date
-    | EnableDesktopNotifications
     | StartPomodoro
     | StartBreak
     | Tick Time.Time
@@ -135,17 +134,25 @@ update action model =
         RecordPomodoro date ->
             updateLog action model
 
-        EnableDesktopNotifications ->
-            model ! [ enableDesktopNotifications ]
-
         StartPomodoro ->
             updateTimer action model
 
         StartBreak ->
             updateTimer action model
 
-        KeyboardEvent _ ->
-            updateTimer action model
+        KeyboardEvent keycode ->
+            case keycode of
+                960 ->
+                    updateTimer action model
+
+                223 ->
+                    updateTimer action model
+
+                8706 ->
+                    updateNotifications action model
+
+                _ ->
+                    model ! []
 
         Tick _ ->
             updateTimer action model
@@ -154,8 +161,13 @@ update action model =
 updateNotifications : Action -> Model -> ( Model, Cmd Action )
 updateNotifications action model =
     case action of
-        EnableDesktopNotifications ->
-            model ! [ enableDesktopNotifications ]
+        KeyboardEvent keycode ->
+            case keycode of
+                8706 ->
+                    model ! [ enableDesktopNotifications ]
+
+                _ ->
+                    model ! []
 
         _ ->
             model ! []
@@ -275,16 +287,7 @@ countUp =
 
 
 subscriptions : Model -> Sub Action
-subscriptions model =
-    Sub.batch
-        [ subscriptionsTimer model.timer
-        , subscriptionsLog model.log
-        , subscriptionsNotifications model.notifications
-        ]
-
-
-subscriptionsTimer : TimerModel -> Sub Action
-subscriptionsTimer model =
+subscriptions { timer } =
     let
         keyPresses =
             Keyboard.presses KeyboardEvent
@@ -292,7 +295,7 @@ subscriptionsTimer model =
         seconds =
             Time.every Time.second Tick
     in
-        case model of
+        case timer of
             Inactive _ _ ->
                 keyPresses
 
@@ -300,69 +303,25 @@ subscriptionsTimer model =
                 Sub.batch [ seconds, keyPresses ]
 
 
-subscriptionsLog : LogModel -> Sub Action
-subscriptionsLog model =
-    Sub.none
-
-
-subscriptionsNotifications : NotificationsModel -> Sub action
-subscriptionsNotifications model =
-    Sub.none
-
-
 view : Model -> Html Action
 view model =
     div [ id "App" ]
         [ viewTimer model.timer
-        , viewNotifications model.notifications
         , viewLog model.log
+        , viewShortcuts
         ]
 
 
 viewTimer : TimerModel -> Html Action
 viewTimer model =
     div [ id "timer" ]
-        [ timer model
-        , timerControls
-        , timerShortcuts
+        [ text (formatTimer model)
         ]
 
 
-timerShortcuts =
-    div [ id "timerShortcuts" ]
-        [ div [] [ text "alt+p" ]
-        , div [] [ text "alt+s" ]
-        ]
-
-
-timer session =
-    div [ id "time" ] [ text (formatTimer session) ]
-
-
-timerControls =
-    div [ id "timerControls" ]
-        [ pomodoroButton
-        , breakButton
-        ]
-
-
-pomodoroButton =
-    div []
-        [ button
-            [ id "startPomodoro"
-            , onClick StartPomodoro
-            ]
-            [ text "Pomodoro" ]
-        ]
-
-
-breakButton =
-    div []
-        [ button
-            [ id "startBreak"
-            , onClick StartBreak
-            ]
-            [ text "Break" ]
+viewShortcuts =
+    div [ id "shortcuts" ]
+        [ div [] [ text "Hit alt+p for a Pomodoro. Hit alt+s for a break. Hit alt+d to enable desktop notifications." ]
         ]
 
 
@@ -426,8 +385,7 @@ formatSeconds time =
 viewLog : LogModel -> Html Action
 viewLog model =
     div [ id "pomodoroLog" ]
-        [ h2 [] [ text "Log" ]
-        , pomodoroLogEntries model
+        [ pomodoroLogEntries model
         ]
 
 
@@ -499,18 +457,8 @@ pomodoroLogEntry logEntry =
 
 
 pomodoroLogNoEntries =
-    div [ id "pomodoroLogEntriesEmpty" ] [ text "<no logged Pomodoros yet>" ]
-
-
-viewNotifications : NotificationsModel -> Html Action
-viewNotifications model =
-    div [ id "notificationControls" ]
-        [ button
-            [ id "enableDesktopNotifications"
-            , onClick EnableDesktopNotifications
-            ]
-            [ text "Enable desktop notifications"
-            ]
+    div [ id "emptyLog" ]
+        [ text "This is where you're logged Pomodoros will appear."
         ]
 
 

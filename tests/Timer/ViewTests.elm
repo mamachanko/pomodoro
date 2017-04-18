@@ -1,5 +1,6 @@
 module Timer.ViewTests exposing (..)
 
+import Html
 import App exposing (..)
 import Time
 import Test exposing (..)
@@ -15,34 +16,26 @@ all =
             [ test "should display an active session" <|
                 \() ->
                     viewTimer (Active Pomodoro <| Time.minute * 12 + Time.second * 34)
+                        |> List.singleton
+                        |> Html.div []
                         |> Query.fromHtml
-                        |> Query.find [ id "time" ]
+                        |> Query.find [ id "timer" ]
                         |> Query.has [ text ("12:34") ]
             , test "should display an inactive session" <|
                 \() ->
                     viewTimer (Inactive Pomodoro <| Time.minute * 12 + Time.second * 34)
+                        |> List.singleton
+                        |> Html.div []
                         |> Query.fromHtml
-                        |> Query.find [ id "time" ]
+                        |> Query.find [ id "timer" ]
                         |> Query.has [ text ("12:34") ]
             , test "should display an overflowing session" <|
                 \() ->
                     viewTimer (Over Pomodoro <| Time.minute * 12 + Time.second * 34)
+                        |> List.singleton
+                        |> Html.div []
                         |> Query.fromHtml
-                        |> Query.find [ id "time" ]
+                        |> Query.find [ id "timer" ]
                         |> Query.has [ text ("-12:34") ]
-            ]
-        , describe "controls"
-            [ test "should display a button to start a Pomodoro" <|
-                \() ->
-                    viewTimer initTimer
-                        |> Query.fromHtml
-                        |> Query.find [ tag "button", id "startPomodoro" ]
-                        |> Query.has [ text "Pomodoro" ]
-            , test "should display a button to start a break" <|
-                \() ->
-                    viewTimer initTimer
-                        |> Query.fromHtml
-                        |> Query.find [ tag "button", id "startBreak" ]
-                        |> Query.has [ text "Break" ]
             ]
         ]

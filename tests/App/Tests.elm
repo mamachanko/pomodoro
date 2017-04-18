@@ -22,21 +22,6 @@ all =
                             , notifications = initNotifications
                             }
             ]
-          -- , describe ".initWithFlags" <|
-          --     [ test "should initialise log" <|
-          --         \() ->
-          --             let
-          --                 initialLog =
-          --                     initLog
-          --             in
-          --                 initWithFlags [ "this", "that" ]
-          --                     |> Expect.equal
-          --                         ({ init
-          --                             | log = { initialLog | log = [ "this", "that" ] }
-          --                          }
-          --                             ! []
-          --                         )
-          --     ]
         , describe ".update" <|
             [ test "should update timer" <|
                 \() ->
@@ -44,16 +29,13 @@ all =
             , test "should update log" <|
                 \() ->
                     Expect.equal (update (RecordPomodoro (Date.fromTime Time.second)) init) (updateLog (RecordPomodoro (Date.fromTime Time.second)) init)
-            , test "should update notifications" <|
-                \() ->
-                    Expect.equal (update EnableDesktopNotifications init) (updateNotifications EnableDesktopNotifications init)
             ]
         , describe ".view" <|
             [ test "should display timer" <|
                 \() ->
                     view { init | timer = freshPomodoro }
                         |> Query.fromHtml
-                        |> Query.find [ id "time" ]
+                        |> Query.find [ id "timer" ]
                         |> Query.has [ text ("25:00") ]
             , test "should display log" <|
                 \() ->
@@ -61,23 +43,11 @@ all =
                         |> Query.fromHtml
                         |> Query.findAll [ id "pomodoroLog" ]
                         |> Query.count (Expect.equal 1)
-            , test "should display notifications" <|
+            , test "should display shortcuts" <|
                 \() ->
                     view init
                         |> Query.fromHtml
-                        |> Query.find [ tag "button", id "enableDesktopNotifications" ]
-                        |> Query.has [ text "Enable desktop notifications" ]
-            ]
-        , describe ".subscriptions" <|
-            [ test "should listen to timer related events" <|
-                \() ->
-                    subscriptions init
-                        |> Expect.equal
-                            (Sub.batch
-                                [ subscriptionsTimer init.timer
-                                , subscriptionsLog init.log
-                                , subscriptionsNotifications init.notifications
-                                ]
-                            )
+                        |> Query.findAll [ id "shortcuts" ]
+                        |> Query.count (Expect.equal 1)
             ]
         ]

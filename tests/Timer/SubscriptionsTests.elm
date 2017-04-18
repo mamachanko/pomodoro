@@ -12,11 +12,11 @@ all =
     describe "Timer.subscriptions"
         [ test "should listen to keyboard presses for shortcuts" <|
             \() ->
-                subscriptionsTimer initTimer
+                subscriptions init
                     |> Expect.equal (Keyboard.presses KeyboardEvent)
         , test "should listen to ticks for an active session" <|
             \() ->
-                subscriptionsTimer freshPomodoro
+                subscriptions { init | timer = freshPomodoro }
                     |> Expect.equal
                         (Sub.batch
                             [ Time.every Time.second Tick
@@ -25,7 +25,7 @@ all =
                         )
         , test "should listen to ticks for an overrunning sessions" <|
             \() ->
-                subscriptionsTimer (Over Pomodoro Time.second)
+                subscriptions { init | timer = Over Pomodoro Time.second }
                     |> Expect.equal
                         (Sub.batch
                             [ Time.every Time.second Tick

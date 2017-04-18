@@ -10,6 +10,6 @@ all =
     describe "Notifications.update"
         [ test "should request to enable desktop notifications" <|
             \() ->
-                updateNotifications EnableDesktopNotifications init
+                updateNotifications (KeyboardEvent 8706) init
                     |> Expect.equal (init ! [ enableDesktopNotifications ])
         ]

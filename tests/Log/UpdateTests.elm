@@ -14,14 +14,13 @@ all =
             \() ->
                 { init
                     | log =
-                        [ { date = Date.fromTime Time.second, text = "worked on stuff" } ]
+                        [ { date = Date.fromTime Time.second, count = 1 } ]
                 }
                     |> updateLog (RecordPomodoro <| Date.fromTime Time.second)
                     |> Expect.equal
                         ({ init
                             | log =
-                                [ { date = Date.fromTime Time.second, text = "Pomodoro" }
-                                , { date = Date.fromTime Time.second, text = "worked on stuff" }
+                                [ { date = Date.fromTime Time.second, count = 2 }
                                 ]
                          }
                             ! []

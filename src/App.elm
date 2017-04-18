@@ -77,7 +77,7 @@ type alias LogModel =
 
 type alias Recorded =
     { date : Date.Date
-    , text : String
+    , count : Int
     }
 
 
@@ -183,7 +183,7 @@ updateLog action model =
             RecordPomodoro date ->
                 let
                     recorded =
-                        Recorded date "Pomodoro"
+                        Recorded date
                 in
                     { model | log = recorded :: log } ! []
 
@@ -385,78 +385,29 @@ formatSeconds time =
 viewLog : LogModel -> Html Action
 viewLog model =
     div [ id "log" ]
-        [ pomodoroLogEntries model
+        [ logEntries model
         ]
 
 
-pomodoroLogEntries log =
+logEntries log =
     if (List.isEmpty log) then
-        pomodoroLogNoEntries
+        noLogEntries
     else
-        let
-            logDates =
-                groupByDate log
-                    |> List.map pomodoroLogDate
-        in
-            ul [ id "logEntries" ]
-                logDates
+        List.map logEntry log
+            |> ul [ id "logEntries" ]
 
 
-groupByDate : LogModel -> List ( String, List Recorded )
-groupByDate log =
-    groupByDate_ log Dict.empty
-
-
-groupByDate_ : LogModel -> Dict.Dict String (List Recorded) -> List ( String, List Recorded )
-groupByDate_ log result =
-    case log of
-        entry :: remainder ->
-            groupByDate_ remainder <|
-                Dict.update (formatLogDate entry.date) (pushLogEntry entry) result
-
-        [] ->
-            Dict.toList result
-
-
-formatLogDate : Date.Date -> String
-formatLogDate =
-    Date.Format.format "%d-%m-%Y"
-
-
-pushLogEntry : Recorded -> Maybe (List Recorded) -> Maybe (List Recorded)
-pushLogEntry entry list =
-    case list of
-        Just stuff ->
-            Just <| List.sortBy (\{ date } -> Date.toTime date) (entry :: stuff)
-
-        Nothing ->
-            Just [ entry ]
-
-
-pomodoroLogDate : ( String, List Recorded ) -> Html Action
-pomodoroLogDate ( dateString, pomodoros ) =
-    let
-        logEntries =
-            ul [] <| List.map pomodoroLogEntry pomodoros
-    in
-        li
-            [ class "logDate"
-            ]
-            [ text dateString
-            , logEntries
-            ]
-
-
-pomodoroLogEntry : Recorded -> Html Action
-pomodoroLogEntry logEntry =
+logEntry : Recorded -> Html Action
+logEntry { date, count } =
     li
         [ class "logEntry"
         ]
-        [ text <| (Date.Format.format "%H:%M" logEntry.date) ++ ": " ++ logEntry.text
+        [ text (Date.Format.format "%H:%M" date)
+        , text (toString count)
         ]
 
 
-pomodoroLogNoEntries =
+noLogEntries =
     div [ id "emptyLog" ]
         [ text "This is where you're logged Pomodoros will appear."
         ]

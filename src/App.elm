@@ -313,8 +313,7 @@ subscriptionsNotifications model =
 view : Model -> Html Action
 view model =
     div [ id "App" ]
-        [ h1 [ id "header" ] [ text "Pomodoro" ]
-        , viewTimer model.timer
+        [ viewTimer model.timer
         , viewNotifications model.notifications
         , viewLog model.log
         ]
@@ -427,7 +426,7 @@ formatSeconds time =
 viewLog : LogModel -> Html Action
 viewLog model =
     div [ id "pomodoroLog" ]
-        [ h2 [] [ text "Pomodoro Log" ]
+        [ h2 [] [ text "Log" ]
         , pomodoroLogEntries model
         ]
 

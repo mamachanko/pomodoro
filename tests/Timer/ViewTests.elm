@@ -38,17 +38,11 @@ all =
                         |> Query.fromHtml
                         |> Query.find [ tag "button", id "startPomodoro" ]
                         |> Query.has [ text "Pomodoro" ]
-            , test "should display a button to start a short break" <|
+            , test "should display a button to start a break" <|
                 \() ->
                     viewTimer initTimer
                         |> Query.fromHtml
-                        |> Query.find [ tag "button", id "startShortBreak" ]
-                        |> Query.has [ text "Short break" ]
-            , test "should display a button to start a long break" <|
-                \() ->
-                    viewTimer initTimer
-                        |> Query.fromHtml
-                        |> Query.find [ tag "button", id "startLongBreak" ]
-                        |> Query.has [ text "Long break" ]
+                        |> Query.find [ tag "button", id "startBreak" ]
+                        |> Query.has [ text "Break" ]
             ]
         ]

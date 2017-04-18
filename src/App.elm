@@ -41,8 +41,7 @@ initNotifications =
 
 timerDefaults =
     { pomodoro = Time.minute * 25
-    , shortbreak = Time.minute * 5
-    , longbreak = Time.minute * 15
+    , break = Time.minute * 5
     }
 
 
@@ -61,8 +60,7 @@ type TimerModel
 
 type SessionType
     = Pomodoro
-    | ShortBreak
-    | LongBreak
+    | Break
 
 
 type alias Remainder =
@@ -91,8 +89,7 @@ type Action
     = RecordPomodoro Date.Date
     | EnableDesktopNotifications
     | StartPomodoro
-    | StartShortBreak
-    | StartLongBreak
+    | StartBreak
     | Tick Time.Time
     | KeyboardEvent Keyboard.KeyCode
 
@@ -102,14 +99,9 @@ fullPomodoro =
     timerDefaults.pomodoro
 
 
-fullShortBreak : Remainder
-fullShortBreak =
-    timerDefaults.shortbreak
-
-
-fullLongBreak : Remainder
-fullLongBreak =
-    timerDefaults.longbreak
+fullBreak : Remainder
+fullBreak =
+    timerDefaults.break
 
 
 unstartedPomodoro : TimerModel
@@ -117,14 +109,9 @@ unstartedPomodoro =
     Inactive Pomodoro fullPomodoro
 
 
-unstartedShortBreak : TimerModel
-unstartedShortBreak =
-    Inactive ShortBreak fullShortBreak
-
-
-unstartedLongBreak : TimerModel
-unstartedLongBreak =
-    Inactive LongBreak fullLongBreak
+unstartedBreak : TimerModel
+unstartedBreak =
+    Inactive Break fullBreak
 
 
 freshPomodoro : TimerModel
@@ -132,14 +119,9 @@ freshPomodoro =
     Active Pomodoro fullPomodoro
 
 
-freshShortBreak : TimerModel
-freshShortBreak =
-    Active ShortBreak fullShortBreak
-
-
-freshLongBreak : TimerModel
-freshLongBreak =
-    Active LongBreak fullLongBreak
+freshBreak : TimerModel
+freshBreak =
+    Active Break fullBreak
 
 
 tick : Action
@@ -159,10 +141,7 @@ update action model =
         StartPomodoro ->
             updateTimer action model
 
-        StartShortBreak ->
-            updateTimer action model
-
-        StartLongBreak ->
+        StartBreak ->
             updateTimer action model
 
         KeyboardEvent _ ->
@@ -210,11 +189,8 @@ updateTimer action model =
             StartPomodoro ->
                 { model | timer = freshPomodoro } ! []
 
-            StartShortBreak ->
-                { model | timer = freshShortBreak } ! []
-
-            StartLongBreak ->
-                { model | timer = freshLongBreak } ! []
+            StartBreak ->
+                { model | timer = freshBreak } ! []
 
             KeyboardEvent keycode ->
                 { model | timer = updateKeyboardEvent timer keycode } ! []
@@ -262,10 +238,7 @@ updateKeyboardEvent model keycode =
             freshPomodoro
 
         223 ->
-            freshShortBreak
-
-        172 ->
-            freshLongBreak
+            freshBreak
 
         _ ->
             model
@@ -360,7 +333,6 @@ timerShortcuts =
     div [ id "timerShortcuts" ]
         [ div [] [ text "alt+p" ]
         , div [] [ text "alt+s" ]
-        , div [] [ text "alt+l" ]
         ]
 
 
@@ -371,8 +343,7 @@ timer session =
 timerControls =
     div [ id "timerControls" ]
         [ pomodoroButton
-        , shortBreakButton
-        , longBreakButton
+        , breakButton
         ]
 
 
@@ -386,23 +357,13 @@ pomodoroButton =
         ]
 
 
-shortBreakButton =
+breakButton =
     div []
         [ button
-            [ id "startShortBreak"
-            , onClick StartShortBreak
+            [ id "startBreak"
+            , onClick StartBreak
             ]
-            [ text "Short break" ]
-        ]
-
-
-longBreakButton =
-    div []
-        [ button
-            [ id "startLongBreak"
-            , onClick StartLongBreak
-            ]
-            [ text "Long break" ]
+            [ text "Break" ]
         ]
 
 

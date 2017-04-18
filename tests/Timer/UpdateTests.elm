@@ -52,87 +52,45 @@ all =
                                 ! []
                             )
             ]
-        , describe "short break" <|
+        , describe "break" <|
             [ test "when it starts" <|
                 \() ->
-                    { init | timer = unstartedShortBreak }
-                        |> updateTimer StartShortBreak
+                    { init | timer = unstartedBreak }
+                        |> updateTimer StartBreak
                         |> Expect.equal
-                            ({ init | timer = freshShortBreak }
+                            ({ init | timer = freshBreak }
                                 ! []
                             )
             , test "when it is counting down" <|
                 \() ->
-                    { init | timer = (Active ShortBreak <| Time.minute * 2 + Time.second * 24) }
+                    { init | timer = (Active Break <| Time.minute * 2 + Time.second * 24) }
                         |> updateTimer tick
                         |> Expect.equal
-                            ( { init | timer = (Active ShortBreak <| Time.minute * 2 + Time.second * 23) }
+                            ( { init | timer = (Active Break <| Time.minute * 2 + Time.second * 23) }
                             , Cmd.none
                             )
             , test "when it is up" <|
                 \() ->
-                    { init | timer = (Active ShortBreak <| Time.second * 1) }
+                    { init | timer = (Active Break <| Time.second * 1) }
                         |> updateTimer tick
                         |> Expect.equal
-                            ({ init | timer = Over ShortBreak 0 }
+                            ({ init | timer = Over Break 0 }
                                 ! [ notify "Ora di pomodoro." ]
                             )
             , test "when it is running over" <|
                 \() ->
-                    { init | timer = Over ShortBreak 0 }
+                    { init | timer = Over Break 0 }
                         |> updateTimer tick
                         |> Expect.equal
-                            ( { init | timer = Over ShortBreak Time.second }
+                            ( { init | timer = Over Break Time.second }
                             , Cmd.none
                             )
             , test "when it continues to run over" <|
                 \() ->
-                    { init | timer = (Over ShortBreak <| Time.second * 59) }
+                    { init | timer = (Over Break <| Time.second * 59) }
                         |> updateTimer tick
                         |> Expect.equal
-                            ( { init | timer = Over ShortBreak Time.minute }
-                            , Cmd.none
-                            )
-            ]
-        , describe "long break" <|
-            [ test "when it starts" <|
-                \() ->
-                    init
-                        |> updateTimer StartLongBreak
-                        |> Expect.equal
-                            ( { init | timer = freshLongBreak }
-                            , Cmd.none
-                            )
-            , test "when it is counting down" <|
-                \() ->
-                    { init | timer = (Active LongBreak <| Time.minute * 2 + Time.second * 24) }
-                        |> updateTimer tick
-                        |> Expect.equal
-                            ( { init | timer = (Active LongBreak <| Time.minute * 2 + Time.second * 23) }
-                            , Cmd.none
-                            )
-            , test "when it is up" <|
-                \() ->
-                    { init | timer = (Active LongBreak <| Time.second * 1) }
-                        |> updateTimer tick
-                        |> Expect.equal
-                            ({ init | timer = Over LongBreak 0 }
-                                ! [ notify "Ora di pomodoro." ]
-                            )
-            , test "when it is running over" <|
-                \() ->
-                    { init | timer = Over LongBreak 0 }
-                        |> updateTimer tick
-                        |> Expect.equal
-                            ( { init | timer = Over LongBreak Time.second }
-                            , Cmd.none
-                            )
-            , test "when it continues to run over" <|
-                \() ->
-                    { init | timer = (Over LongBreak <| Time.second * 59) }
-                        |> updateTimer tick
-                        |> Expect.equal
-                            ( { init | timer = Over LongBreak Time.minute }
+                            ( { init | timer = Over Break Time.minute }
                             , Cmd.none
                             )
             ]
@@ -144,18 +102,11 @@ all =
                             ( { init | timer = freshPomodoro }
                             , Cmd.none
                             )
-            , test "starts a short break" <|
+            , test "starts a break" <|
                 \() ->
                     updateTimer (KeyboardEvent 223) init
                         |> Expect.equal
-                            ( { init | timer = freshShortBreak }
-                            , Cmd.none
-                            )
-            , test "starts a long break" <|
-                \() ->
-                    updateTimer (KeyboardEvent 172) init
-                        |> Expect.equal
-                            ( { init | timer = freshLongBreak }
+                            ( { init | timer = freshBreak }
                             , Cmd.none
                             )
             ]

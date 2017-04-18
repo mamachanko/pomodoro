@@ -41,7 +41,7 @@ all =
                 \() ->
                     view init
                         |> Query.fromHtml
-                        |> Query.findAll [ id "pomodoroLog" ]
+                        |> Query.findAll [ id "log" ]
                         |> Query.count (Expect.equal 1)
             , test "should display shortcuts" <|
                 \() ->

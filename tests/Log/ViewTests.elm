@@ -22,25 +22,25 @@ all =
                 \() ->
                     viewLog log
                         |> Query.fromHtml
-                        |> Query.findAll [ class "pomodoroLogDate" ]
+                        |> Query.findAll [ class "logDate" ]
                         |> Query.count (Expect.equal 2)
         , test "should show entry for date" <|
             \() ->
                 viewLog [ { date = Date.fromTime ((Time.hour * 24) * 180 + Time.hour * 2 + Time.minute * 15), text = "worked on stuff" } ]
                     |> Query.fromHtml
-                    |> Query.find [ class "pomodoroLogDate" ]
+                    |> Query.find [ class "logDate" ]
                     |> Query.has [ text "30-06-1970" ]
         , test "should show log entries for date" <|
             \() ->
                 viewLog [ { date = Date.fromTime ((Time.hour * 24) * 180 + Time.hour * 2 + Time.minute * 15), text = "worked on stuff" } ]
                     |> Query.fromHtml
-                    |> Query.find [ class "pomodoroLogEntry" ]
+                    |> Query.find [ class "logEntry" ]
                     |> Query.has [ text "03:15: worked on stuff" ]
         , test "should show an empty session log" <|
             \() ->
                 viewLog []
                     |> Query.fromHtml
-                    |> Query.findAll [ class "pomodoroLogEntry" ]
+                    |> Query.findAll [ class "logEntry" ]
                     |> Query.count (Expect.equal 0)
         , test "should group log entries by date" <|
             \() ->

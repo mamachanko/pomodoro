@@ -384,7 +384,7 @@ formatSeconds time =
 
 viewLog : LogModel -> Html Action
 viewLog model =
-    div [ id "pomodoroLog" ]
+    div [ id "log" ]
         [ pomodoroLogEntries model
         ]
 
@@ -398,7 +398,7 @@ pomodoroLogEntries log =
                 groupByDate log
                     |> List.map pomodoroLogDate
         in
-            ul [ id "pomodoroLogEntries" ]
+            ul [ id "logEntries" ]
                 logDates
 
 
@@ -440,7 +440,7 @@ pomodoroLogDate ( dateString, pomodoros ) =
             ul [] <| List.map pomodoroLogEntry pomodoros
     in
         li
-            [ class "pomodoroLogDate"
+            [ class "logDate"
             ]
             [ text dateString
             , logEntries
@@ -450,7 +450,7 @@ pomodoroLogDate ( dateString, pomodoros ) =
 pomodoroLogEntry : Recorded -> Html Action
 pomodoroLogEntry logEntry =
     li
-        [ class "pomodoroLogEntry"
+        [ class "logEntry"
         ]
         [ text <| (Date.Format.format "%H:%M" logEntry.date) ++ ": " ++ logEntry.text
         ]

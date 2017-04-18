@@ -8,10 +8,6 @@ body, html {
   font-family: 'Droid Serif', serif;
 }
 
-h1 {
-  margin: 0;
-}
-
 #App {
   height: 100%;
   display: flex;
@@ -20,23 +16,20 @@ h1 {
   justify-content: space-between;
 }
 
-/*#App > div {
-  margin: 40px 0px;
-}*/
-
 #timer {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 100px;
   height: 100%;
+  font-size: 120px;
 }
 
-#pomodoroLog {
+#log {
   display: flex;
   justify-content: center;
   line-height: 1.5;
   height: 100%;
+  font-size: 24px;
 }
 
 #emptyLog {
@@ -44,7 +37,7 @@ h1 {
 }
 
 #shortcuts {
-  font-size: 12px;
+  font-size: 16px;
   align-items: center;
   line-height: 1.5;
   justify-content: space-around;

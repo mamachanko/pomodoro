@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Droid+Serif');
 
 body, html {
-  overflow: hidden;
   margin: 0;
   padding: 0;
   height: 100%;
@@ -38,8 +37,14 @@ body, html {
 
 #shortcuts {
   font-size: 16px;
-  align-items: center;
   line-height: 1.5;
-  justify-content: space-around;
-  margin-bottom: 16px;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

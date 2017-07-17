@@ -6,7 +6,7 @@ import Time
 import Date
 import Date.Format
 import Keyboard
-import Html exposing (Html, div, map, programWithFlags, h1, text, td, input, button, h1, h2, ul, li)
+import Html exposing (Html, div, footer, map, programWithFlags, h1, text, td, input, button, h1, h2, ul, li)
 import Html.Attributes exposing (class, id, type_, value, style)
 import Html.Events exposing (onClick, onInput)
 
@@ -320,9 +320,8 @@ viewTimer model =
 
 
 viewShortcuts =
-    div [ id "shortcuts" ]
-        [ div [] [ text "Hit alt+p for a Pomodoro. Hit alt+s for a break. Hit alt+d to enable desktop notifications." ]
-        ]
+    footer [ id "shortcuts" ]
+        [ text "Hit alt+p for a Pomodoro. Hit alt+s for a break. Hit alt+d to enable desktop notifications." ]
 
 
 formatTimer : TimerModel -> String

@@ -31,4 +31,23 @@ all =
                              }
                                 ! [ writeLog newLog ]
                             )
+        , test "should reset the log on alt+r" <|
+            \() ->
+                let
+                    oldLog =
+                        [ { date = Date.fromTime Time.second, text = "worked on stuff" } ]
+
+                    emptyLog =
+                        []
+                in
+                    { init
+                        | log = oldLog
+                    }
+                        |> updateLog altR
+                        |> Expect.equal
+                            ({ init
+                                | log = emptyLog
+                             }
+                                ! [ resetLog ]
+                            )
         ]

@@ -29,4 +29,7 @@ all =
                                 }
                             ]
                         )
+        , test "should reset log" <|
+            \() ->
+                resetLog |> Expect.equal (writeLog [])
         ]

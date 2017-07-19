@@ -19,6 +19,10 @@ init =
     }
 
 
+altR =
+    KeyboardEvent 174
+
+
 type alias Flag =
     { date : String, text : String }
 
@@ -171,6 +175,9 @@ update action model =
                 8706 ->
                     updateNotifications action model
 
+                174 ->
+                    updateLog action model
+
                 _ ->
                     model ! []
 
@@ -209,6 +216,9 @@ updateLog action model =
                         recordedPomodoro :: log
                 in
                     { model | log = newLog } ! [ writeLog newLog ]
+
+            KeyboardEvent 174 ->
+                { model | log = [] } ! [ resetLog ]
 
             _ ->
                 model ! []
@@ -344,7 +354,9 @@ viewTimer model =
 
 viewShortcuts =
     footer [ id "shortcuts" ]
-        [ text "Hit alt+p for a Pomodoro. Hit alt+s for a break. Hit alt+d to enable desktop notifications." ]
+        [ p [] [ text "Hit alt+p for a Pomodoro. Hit alt+s for a break." ]
+        , p [] [ text "Hit alt+r to reset your log. Hit alt+d to enable desktop notifications." ]
+        ]
 
 
 formatTimer : TimerModel -> String
@@ -497,6 +509,11 @@ writeLog log =
                     List.map serializeLog log
                 }
             ]
+
+
+resetLog : Cmd msg
+resetLog =
+    writeLog []
 
 
 enableDesktopNotifications : Cmd msg

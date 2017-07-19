@@ -45,6 +45,11 @@ body, html {
   height: 64px;
   background: white;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+#shortcuts p {
+  margin: 0;
 }

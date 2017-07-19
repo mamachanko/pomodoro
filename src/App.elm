@@ -449,7 +449,7 @@ groupByDate_ log result =
                 Dict.update (formatLogDate entry.date) (pushLogEntry entry) result
 
         [] ->
-            Dict.toList result
+            Dict.toList result |> List.reverse
 
 
 formatLogDate : Date.Date -> String
@@ -461,7 +461,7 @@ pushLogEntry : Recorded -> Maybe (List Recorded) -> Maybe (List Recorded)
 pushLogEntry entry list =
     case list of
         Just stuff ->
-            Just <| List.sortBy (\{ date } -> Date.toTime date) (entry :: stuff)
+            Just <| List.sortBy (\{ date } -> (Date.toTime date) * -1) (entry :: stuff)
 
         Nothing ->
             Just [ entry ]

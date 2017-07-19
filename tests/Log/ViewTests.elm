@@ -67,9 +67,9 @@ all =
                         [ dayOne, dayOne_, dayTwo, dayTwo_, dayThree ]
 
                     expectedGroupByDate =
-                        [ ( "01-01-1970", [ dayOne, dayOne_ ] )
-                        , ( "02-01-1970", [ dayTwo, dayTwo_ ] )
-                        , ( "03-01-1970", [ dayThree ] )
+                        [ ( "03-01-1970", [ dayThree ] )
+                        , ( "02-01-1970", [ dayTwo_, dayTwo ] )
+                        , ( "01-01-1970", [ dayOne_, dayOne ] )
                         ]
                 in
                     groupByDate log

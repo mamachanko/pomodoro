@@ -12,18 +12,23 @@ all =
     describe "Log.update"
         [ test "should record a Pomodoro" <|
             \() ->
-                { init
-                    | log =
+                let
+                    oldLog =
                         [ { date = Date.fromTime Time.second, text = "worked on stuff" } ]
-                }
-                    |> updateLog (RecordPomodoro <| Date.fromTime Time.second)
-                    |> Expect.equal
-                        ({ init
-                            | log =
-                                [ { date = Date.fromTime Time.second, text = "Pomodoro" }
-                                , { date = Date.fromTime Time.second, text = "worked on stuff" }
-                                ]
-                         }
-                            ! []
-                        )
+
+                    newLog =
+                        [ { date = Date.fromTime Time.second, text = "Pomodoro" }
+                        , { date = Date.fromTime Time.second, text = "worked on stuff" }
+                        ]
+                in
+                    { init
+                        | log = oldLog
+                    }
+                        |> updateLog (RecordPomodoro <| Date.fromTime Time.second)
+                        |> Expect.equal
+                            ({ init
+                                | log = newLog
+                             }
+                                ! [ writeLog newLog ]
+                            )
         ]

@@ -202,10 +202,13 @@ updateLog action model =
         case action of
             RecordPomodoro date ->
                 let
-                    recorded =
+                    recordedPomodoro =
                         Recorded date "Pomodoro"
+
+                    newLog =
+                        recordedPomodoro :: log
                 in
-                    { model | log = recorded :: log } ! []
+                    { model | log = newLog } ! [ writeLog newLog ]
 
             _ ->
                 model ! []
@@ -481,10 +484,26 @@ pomodoroLogNoEntries =
         ]
 
 
+writeLog : LogModel -> Cmd msg
+writeLog log =
+    let
+        serializeLog log =
+            { date = toString log.date, text = log.text }
+    in
+        Cmd.batch
+            [ updatePomodoroLogPort
+                { log =
+                    List.map serializeLog log
+                }
+            ]
+
+
+enableDesktopNotifications : Cmd msg
 enableDesktopNotifications =
     requestPermissionsPort ""
 
 
+notify : String -> Cmd msg
 notify message =
     Cmd.batch
         [ sendNotification message
@@ -492,10 +511,12 @@ notify message =
         ]
 
 
+sendNotification : String -> Cmd msg
 sendNotification message =
     sendNotificationPort message
 
 
+ringBell : Cmd msg
 ringBell =
     ringBellPort ""
 
@@ -509,7 +530,7 @@ port sendNotificationPort : String -> Cmd action
 port ringBellPort : String -> Cmd action
 
 
-port updatePomodoroLogPort : String -> Cmd action
+port updatePomodoroLogPort : Flags -> Cmd action
 
 
 main =

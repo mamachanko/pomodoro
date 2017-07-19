@@ -28,11 +28,14 @@ App.ports.updatePomodoroLogPort.subscribe(function(pomodoroLog) {
 });
 
 function updatePomodoroLog(pomodoroLog) {
+  console.log("writing log");
+  console.log(pomodoroLog)
   localStorage.setItem(pomodoroLogKey, JSON.stringify(pomodoroLog));
 }
 
 function getPomodoroLog() {
   const pomodoroLog = localStorage.getItem(pomodoroLogKey);
+  console.log('reading log');
   if (pomodoroLog == null) {
     return {log: []}
   }

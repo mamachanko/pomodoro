@@ -6,7 +6,7 @@ import Time
 import Date
 import Date.Format
 import Keyboard
-import Html exposing (Html, div, footer, map, programWithFlags, h1, text, td, input, button, h1, h2, ul, li)
+import Html exposing (Html, div, footer, map, programWithFlags, h1, text, p, td, input, button, h1, h2, ul, li)
 import Html.Attributes exposing (class, id, type_, value, style)
 import Html.Events exposing (onClick, onInput)
 
@@ -480,7 +480,8 @@ pomodoroLogEntry logEntry =
 
 pomodoroLogNoEntries =
     div [ id "emptyLog" ]
-        [ text "This is where you're logged Pomodoros will appear."
+        [ p [] [ text "This is where you're logged Pomodoros will appear." ]
+        , p [] [ text "Your log is kept on this device and survives reloads." ]
         ]
 
 

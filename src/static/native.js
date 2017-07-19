@@ -34,7 +34,7 @@ function updatePomodoroLog(pomodoroLog) {
 function getPomodoroLog() {
   const pomodoroLog = localStorage.getItem(pomodoroLogKey);
   if (pomodoroLog == null) {
-    return []
+    return {log: []}
   }
   return JSON.parse(pomodoroLog);
 }

@@ -19,9 +19,29 @@ init =
     }
 
 
-initWithFlags : List String -> ( Model, Cmd msg )
-initWithFlags log =
-    init ! []
+type alias Flag =
+    { date : String, text : String }
+
+
+type alias Flags =
+    { log : List Flag }
+
+
+initWithFlags : Flags -> ( Model, Cmd msg )
+initWithFlags flags =
+    let
+        parseLog log =
+            case Date.fromString log.date of
+                Ok date ->
+                    Just { date = date, text = log.text }
+
+                Err error ->
+                    Nothing
+
+        loadedLog =
+            List.map parseLog flags.log |> List.filterMap identity
+    in
+        { init | log = loadedLog } ! []
 
 
 initTimer : TimerModel

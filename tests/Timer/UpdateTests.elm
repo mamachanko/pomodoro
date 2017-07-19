@@ -33,7 +33,8 @@ all =
                         updateTimer tick { init | timer = (Active Pomodoro <| Time.second * 1) }
                 in
                     \() ->
-                        Expect.equal { init | timer = Over Pomodoro 0 } model
+                        { init | timer = Over Pomodoro 0 }
+                            |> Expect.equal model
               -- it should also notify and record a Pomodoro, but a Task cannot be tested
             , test "when it is running over" <|
                 \() ->

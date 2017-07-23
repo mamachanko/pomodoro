@@ -6,8 +6,6 @@ git pull --rebase
 
 ./test.sh
 
-./build.sh
-
 git push
 
 ./deploy.sh

@@ -1,6 +1,8 @@
-#!/usr/bin/env bash -xe
+#/usr/bin/env bash
 
-elm format \
+set -ex
+
+elm-format \
     --yes \
     src \
     tests

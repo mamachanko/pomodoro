@@ -4,7 +4,7 @@ set -ex
 
 rm -rf dist/
 
-elm make \
+elm-make \
   --yes \
   --output dist/elm.js \
   src/App.elm

@@ -1,4 +1,8 @@
 {
+    "version": "1.0.0",
+    "summary": "Test Suites",
+    "repository": "https://github.com/mamachanko/pomodoro.git",
+    "license": "MIT",
     "source-directories": [
         "../src/",
         "."

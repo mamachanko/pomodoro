@@ -12,8 +12,8 @@ all =
         [ test "should write log via port" <|
             \() ->
                 writeLog
-                    [ { date = Date.fromTime 0, text = "text" }
-                    , { date = Date.fromTime (86400 * 1000), text = "text" }
+                    [ { date = Date.fromTime 0, text = "text", editing = False }
+                    , { date = Date.fromTime (86400 * 1000), text = "text", editing = False }
                     ]
                     |> Expect.equal
                         (Cmd.batch

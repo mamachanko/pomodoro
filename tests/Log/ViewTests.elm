@@ -15,8 +15,8 @@ all =
         [ test "should show log entries for dates" <|
             let
                 log =
-                    [ { date = Date.fromTime 0, text = "worked on stuff" }
-                    , { date = Date.fromTime (Time.hour * 24), text = "worked on other stuff" }
+                    [ { date = Date.fromTime 0, text = "worked on stuff", editing = False }
+                    , { date = Date.fromTime (Time.hour * 24), text = "worked on other stuff", editing = False }
                     ]
             in
                 \() ->
@@ -26,16 +26,22 @@ all =
                         |> Query.count (Expect.equal 2)
         , test "should show entry for date" <|
             \() ->
-                viewLog [ { date = Date.fromTime ((Time.hour * 24) * 180 + Time.hour * 2 + Time.minute * 15), text = "worked on stuff" } ]
+                viewLog [ { date = Date.fromTime ((Time.hour * 24) * 180 + Time.hour * 2 + Time.minute * 15), text = "worked on stuff", editing = False } ]
                     |> Query.fromHtml
                     |> Query.find [ class "logDate" ]
                     |> Query.has [ text "30-06-1970" ]
         , test "should show log entries for date" <|
             \() ->
-                viewLog [ { date = Date.fromTime ((Time.hour * 24) * 180 + Time.hour * 2 + Time.minute * 15), text = "worked on stuff" } ]
+                viewLog [ { date = Date.fromTime ((Time.hour * 24) * 180 + Time.hour * 2 + Time.minute * 15), text = "worked on stuff", editing = False } ]
                     |> Query.fromHtml
-                    |> Query.find [ class "logEntry" ]
-                    |> Query.has [ text "03:15: worked on stuff" ]
+                    |> Query.find [ class "logEntryDate" ]
+                    |> Query.has [ text "03:15" ]
+        , test "should show log entries with text" <|
+            \() ->
+                viewLog [ { date = Date.fromTime ((Time.hour * 24) * 180 + Time.hour * 2 + Time.minute * 15), text = "worked on stuff", editing = False } ]
+                    |> Query.fromHtml
+                    |> Query.find [ class "logEntryText" ]
+                    |> Query.has [ text "worked on stuff" ]
         , test "should show an empty session log" <|
             \() ->
                 viewLog []
@@ -46,7 +52,7 @@ all =
             \() ->
                 let
                     logEntry =
-                        { date = Date.fromTime 0, text = "worked on stuff" }
+                        { date = Date.fromTime 0, text = "worked on stuff", editing = False }
 
                     dayOne =
                         { logEntry | date = Date.fromTime 1 }

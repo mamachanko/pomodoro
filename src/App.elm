@@ -6,9 +6,10 @@ import Time
 import Date
 import Date.Format
 import Keyboard
-import Html exposing (Html, div, footer, map, programWithFlags, h1, text, p, td, input, button, h1, h2, ul, li)
-import Html.Attributes exposing (class, id, type_, value, style)
-import Html.Events exposing (onClick, onInput)
+import Json.Decode
+import Html exposing (Html, div, footer, map, programWithFlags, h1, text, p, td, input, button, h1, h2, ul, li, label)
+import Html.Attributes exposing (class, id, type_, value, style, classList, placeholder)
+import Html.Events exposing (onClick, onInput, onDoubleClick, onBlur)
 
 
 init : Model
@@ -37,7 +38,7 @@ initWithFlags flags =
         parseLog log =
             case Date.fromString log.date of
                 Ok date ->
-                    Just { date = date, text = log.text }
+                    Just { date = date, text = log.text, editing = False }
 
                 Err error ->
                     Nothing
@@ -102,6 +103,7 @@ type alias LogModel =
 type alias Recorded =
     { date : Date.Date
     , text : String
+    , editing : Bool
     }
 
 
@@ -111,6 +113,8 @@ type NotificationsModel
 
 type Action
     = RecordPomodoro Date.Date
+    | UpdatePomodoro Date.Date String
+    | EditingPomodoro Date.Date Bool
     | StartPomodoro
     | StartBreak
     | Tick Time.Time
@@ -156,6 +160,12 @@ update : Action -> Model -> ( Model, Cmd Action )
 update action model =
     case action of
         RecordPomodoro date ->
+            updateLog action model
+
+        EditingPomodoro date isEditing ->
+            updateLog action model
+
+        UpdatePomodoro date text ->
             updateLog action model
 
         StartPomodoro ->
@@ -209,11 +219,34 @@ updateLog action model =
         case action of
             RecordPomodoro date ->
                 let
-                    recordedPomodoro =
-                        Recorded date "Pomodoro"
+                    newLog =
+                        newPomodoro date :: model.log
+                in
+                    { model
+                        | log = newLog
+                    }
+                        ! [ writeLog newLog ]
+
+            EditingPomodoro date isEditing ->
+                let
+                    updateEditing pomodoro =
+                        if pomodoro.date == date then
+                            { pomodoro | editing = isEditing }
+                        else
+                            pomodoro
+                in
+                    { model | log = List.map updateEditing model.log } ! []
+
+            UpdatePomodoro date text ->
+                let
+                    updateText pomodoro =
+                        if pomodoro.date == date then
+                            { pomodoro | text = text }
+                        else
+                            pomodoro
 
                     newLog =
-                        recordedPomodoro :: log
+                        List.map updateText model.log
                 in
                     { model | log = newLog } ! [ writeLog newLog ]
 
@@ -222,6 +255,11 @@ updateLog action model =
 
             _ ->
                 model ! []
+
+
+newPomodoro : Date.Date -> Recorded
+newPomodoro date =
+    Recorded date "Pomodoro" False
 
 
 updateTimer : Action -> Model -> ( Model, Cmd Action )
@@ -484,10 +522,40 @@ pomodoroLogDate ( dateString, pomodoros ) =
 pomodoroLogEntry : Recorded -> Html Action
 pomodoroLogEntry logEntry =
     li
-        [ class "logEntry"
+        [ class "logEntry" ]
+        [ p [ class "logEntryDate" ]
+            [ text <| (Date.Format.format "%H:%M" logEntry.date)
+            ]
+        , p
+            [ classList [ ( "logEntryText", True ), ( "editing", logEntry.editing ) ]
+            , onDoubleClick (EditingPomodoro logEntry.date True)
+            ]
+            [ label
+                [ class "view"
+                ]
+                [ text logEntry.text ]
+            , input
+                [ class "edit"
+                , value logEntry.text
+                , onInput (UpdatePomodoro logEntry.date)
+                , onBlur (EditingPomodoro logEntry.date False)
+                , onEnter (EditingPomodoro logEntry.date False)
+                ]
+                []
+            ]
         ]
-        [ text <| (Date.Format.format "%H:%M" logEntry.date) ++ ": " ++ logEntry.text
-        ]
+
+
+onEnter : Action -> Html.Attribute Action
+onEnter msg =
+    let
+        isEnter code =
+            if code == 13 then
+                Json.Decode.succeed msg
+            else
+                Json.Decode.fail "not ENTER"
+    in
+        Html.Events.on "keydown" (Json.Decode.andThen isEnter Html.Events.keyCode)
 
 
 pomodoroLogNoEntries =

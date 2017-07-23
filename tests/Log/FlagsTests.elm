@@ -33,6 +33,7 @@ all =
                                 | log =
                                     [ { date = Date.fromTime 0
                                       , text = "text"
+                                      , editing = False
                                       }
                                     ]
                              }

@@ -26,13 +26,53 @@ body, html {
 #log {
   display: flex;
   justify-content: center;
-  line-height: 1.5;
   height: 100%;
+  line-height: 1.5;
   font-size: 24px;
+  border-top: 1px solid black;
 }
 
 #emptyLog {
   color: #ccc;
+}
+
+#log .logEntry {
+  width: 506px;
+  display: flex;
+}
+
+#log .logEntryDate {
+  margin-right: 8px;
+}
+
+#log .logEntryDate::after {
+  content: ":";
+}
+
+#log .logEntryText .view:blank {
+  content: "<double-click to edit>";
+}
+
+#log .logEntryText.editing .view {
+  display: none;
+}
+
+#log .logEntryText.editing .edit {
+  font-family: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+  line-height: 1.45em;
+  width: 100%;
+  display: block;
+  box-sizing: border-box;
+  border: 0;
+  outline: none;
+  border: 1px solid #999;
+  box-shadow: inset 0 -1px 5px 0 rgba(0, 0, 0, 0.2);
+}
+
+#log .logEntryText .edit {
+  display: none;
 }
 
 #shortcuts {
@@ -50,6 +90,6 @@ body, html {
   justify-content: center;
 }
 
-#shortcuts p {
+p {
   margin: 0;
 }

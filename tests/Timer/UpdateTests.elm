@@ -35,7 +35,8 @@ all =
                     \() ->
                         { init | timer = Over Pomodoro 0 }
                             |> Expect.equal model
-              -- it should also notify and record a Pomodoro, but a Task cannot be tested
+
+            -- it should also notify and record a Pomodoro, but a Task cannot be tested
             , test "when it is running over" <|
                 \() ->
                     { init | timer = Over Pomodoro 0 }

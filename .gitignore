@@ -3,6 +3,9 @@ elm-stuff/
 # elm-repl generated files
 repl-temp-*
 elm-stuff/
+# node
+node_modules/
 # build
 dist/
+build/
 .idea/

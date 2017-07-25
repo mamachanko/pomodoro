@@ -4,9 +4,12 @@ BUILD = build
 CSS = styles
 HTML = src/index.html
 
-build: test clean build-directory html js css
+build: clean build-directory html js css
 
-ship: build rebase deploy
+keep-building:
+	chokidar "$(SRC)" "$(CSS)" -c "make"
+
+ship: test build rebase deploy
 
 deploy:
 	cf push
@@ -16,6 +19,9 @@ rebase:
 
 test: format
 	elm-test --yes
+
+keep-testing: format
+	elm-test --yes --watch
 
 format:
 	elm-format --yes $(SRC) $(TEST)
@@ -35,3 +41,11 @@ js:
 
 css:
 	cp $(CSS)/*.css $(BUILD)/
+
+serve:
+	browser-sync start 	\
+	--server $(BUILD) \
+	--files $(BUILD) \
+	--no-ui \
+	--no-notify \
+	--port 8080

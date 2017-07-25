@@ -3,7 +3,7 @@ applications:
   - name: Pomodoro
     mem: 64M
     buildpack: staticfile_buildpack
-    path: dist/
+    path: build/
     routes:
       - route: pomodoro.cfapps.io
     env:

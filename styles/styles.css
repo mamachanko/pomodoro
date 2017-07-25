@@ -48,6 +48,10 @@ body, html {
   content: ":";
 }
 
+#log .logEntryText .view {
+  cursor: pointer;
+}
+
 #log .logEntryText .view:blank {
   content: "<double-click to edit>";
 }

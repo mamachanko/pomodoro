@@ -43,17 +43,12 @@ all =
                         [ { date = Date.fromTime 0, text = "worked on stuff", editing = False }
                         , { date = Date.fromTime 1, text = "worked on stuff", editing = True }
                         ]
+
+                    ( newModel, _ ) =
+                        { init | log = oldLog }
+                            |> updateLog (EditingPomodoro (Date.fromTime 1) True)
                 in
-                    { init
-                        | log = oldLog
-                    }
-                        |> updateLog (EditingPomodoro (Date.fromTime 1) True)
-                        |> Expect.equal
-                            ({ init
-                                | log = newLog
-                             }
-                                ! []
-                            )
+                    Expect.equal { init | log = newLog } newModel
         , test "should end editing a Pomodoro" <|
             \() ->
                 let
@@ -66,17 +61,12 @@ all =
                         [ { date = Date.fromTime 0, text = "worked on stuff", editing = False }
                         , { date = Date.fromTime 1, text = "worked on stuff", editing = False }
                         ]
+
+                    ( newModel, _ ) =
+                        { init | log = oldLog }
+                            |> updateLog (EditingPomodoro (Date.fromTime 1) False)
                 in
-                    { init
-                        | log = oldLog
-                    }
-                        |> updateLog (EditingPomodoro (Date.fromTime 1) False)
-                        |> Expect.equal
-                            ({ init
-                                | log = newLog
-                             }
-                                ! []
-                            )
+                    Expect.equal { init | log = newLog } newModel
         , test "should update a Pomodoro" <|
             \() ->
                 let

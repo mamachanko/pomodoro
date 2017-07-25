@@ -7,6 +7,7 @@ import Date
 import Date.Format
 import Keyboard
 import Json.Decode
+import Dom
 import Html exposing (Html, div, footer, map, programWithFlags, h1, text, p, td, input, button, h1, h2, ul, li, label)
 import Html.Attributes exposing (class, id, type_, value, style, classList, placeholder)
 import Html.Events exposing (onClick, onInput, onDoubleClick, onBlur)
@@ -119,6 +120,7 @@ type Action
     | StartBreak
     | Tick Time.Time
     | KeyboardEvent Keyboard.KeyCode
+    | NoOp
 
 
 fullPomodoro : Remainder
@@ -194,6 +196,9 @@ update action model =
         Tick _ ->
             updateTimer action model
 
+        NoOp ->
+            model ! []
+
 
 updateNotifications : Action -> Model -> ( Model, Cmd Action )
 updateNotifications action model =
@@ -234,8 +239,15 @@ updateLog action model =
                             { pomodoro | editing = isEditing }
                         else
                             pomodoro
+
+                    focus =
+                        Dom.focus ("pomodoro-" ++ toString date)
                 in
-                    { model | log = List.map updateEditing model.log } ! []
+                    { model
+                        | log = List.map updateEditing model.log
+                    }
+                        ! [ Task.attempt (\_ -> NoOp) focus
+                          ]
 
             UpdatePomodoro date text ->
                 let
@@ -538,6 +550,7 @@ pomodoroLogEntry logEntry =
             , input
                 [ class "edit"
                 , value logEntry.text
+                , id ("pomodoro-" ++ (toString logEntry.date))
                 , onInput (UpdatePomodoro logEntry.date)
                 , onBlur (EditingPomodoro logEntry.date False)
                 , onEnter (EditingPomodoro logEntry.date False)

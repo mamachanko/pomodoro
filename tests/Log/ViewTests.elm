@@ -42,6 +42,12 @@ all =
                     |> Query.fromHtml
                     |> Query.find [ class "logEntryText" ]
                     |> Query.has [ text "worked on stuff" ]
+        , test "should show log entries with id" <|
+            \() ->
+                viewLog [ { date = Date.fromTime 0, text = "worked on stuff", editing = False } ]
+                    |> Query.fromHtml
+                    |> Query.find [ class "logEntryText" ]
+                    |> Query.has [ id ("pomodoro-" ++ (Date.fromTime 0 |> toString)) ]
         , test "should show an empty session log" <|
             \() ->
                 viewLog []

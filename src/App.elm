@@ -392,7 +392,8 @@ viewTimer model =
 
 viewShortcuts =
     footer [ id "shortcuts" ]
-        [ p [] [ text "Hit alt+p for a Pomodoro. Hit alt+s for a break." ]
+        [ p [] [ text "Double-click to edit a logged Pomodoro." ]
+        , p [] [ text "Hit alt+p for a Pomodoro. Hit alt+s for a break." ]
         , p [] [ text "Hit alt+r to reset your log. Hit alt+d to enable desktop notifications." ]
         ]
 

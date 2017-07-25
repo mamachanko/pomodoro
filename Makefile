@@ -6,19 +6,22 @@ HTML = src/index.html
 
 build: clean build-directory html js css
 
-keep-building:
-	chokidar "$(SRC)" "$(CSS)" -c "make"
-
-ship: test build rebase deploy
+ship: rebase test build push deploy
 
 deploy:
 	cf push
+
+push:
+	git push
 
 rebase:
 	git pull --rebase
 
 test: format
 	elm-test --yes
+
+keep-building:
+	chokidar "$(SRC)" "$(CSS)" -c "make"
 
 keep-testing: format
 	elm-test --yes --watch
@@ -42,7 +45,7 @@ js:
 css:
 	cp $(CSS)/*.css $(BUILD)/
 
-serve:
+serve: build
 	browser-sync start 	\
 	--server $(BUILD) \
 	--files $(BUILD) \

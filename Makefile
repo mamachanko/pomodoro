@@ -1,3 +1,4 @@
+BIN = ./node_modules/.bin
 SRC = src
 TEST = tests
 BUILD = build
@@ -18,16 +19,16 @@ rebase:
 	git pull --rebase
 
 test: format
-	elm-test --yes
+	$(BIN)/elm-test --yes --compiler=$(shell pwd)/$(BIN)/elm-make
 
 keep-building:
-	chokidar "$(SRC)" "$(CSS)" -c "make"
+	$(BIN)/chokidar "$(SRC)" "$(CSS)" -c "make"
 
 keep-testing: format
-	elm-test --yes --watch
+	$(BIN)/elm-test --yes --watch --compiler=$(shell pwd)/$(BIN)/elm-make
 
 format:
-	elm-format --yes $(SRC) $(TEST)
+	$(BIN)/elm-format --yes $(SRC) $(TEST)
 
 clean:
 	rm -rf $(BUILD)
@@ -39,16 +40,19 @@ html:
 	cp $(HTML) $(BUILD)/index.html
 
 js:
-	elm-make --yes $(SRC)/App.elm --output $(BUILD)/elm.js
+	$(BIN)/elm-make --yes $(SRC)/App.elm --output $(BUILD)/elm.js
 	cp $(SRC)/native.js $(BUILD)/native.js
 
 css:
 	cp $(CSS)/*.css $(BUILD)/
 
 serve: build
-	browser-sync start 	\
+	$(BIN)/browser-sync start 	\
 	--server $(BUILD) \
 	--files $(BUILD) \
 	--no-ui \
 	--no-notify \
 	--port 8080
+
+setup:
+	yarn

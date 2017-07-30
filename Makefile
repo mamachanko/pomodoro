@@ -7,7 +7,7 @@ HTML = src/index.html
 
 build: clean build-directory html js css
 
-ship: rebase test build push deploy
+ship: rebase test feature-test build push deploy
 
 deploy:
 	cf push
@@ -20,6 +20,9 @@ rebase:
 
 test: format
 	$(BIN)/elm-test --yes --compiler=$(shell pwd)/$(BIN)/elm-make
+
+feature-test: build
+	./feature-tests.sh
 
 keep-building:
 	$(BIN)/chokidar "$(SRC)" "$(CSS)" -c "make"
@@ -51,6 +54,7 @@ serve: build
 	--server $(BUILD) \
 	--files $(BUILD) \
 	--no-ui \
+	--no-open \
 	--no-notify \
 	--port 8080
 

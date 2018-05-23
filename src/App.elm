@@ -187,6 +187,9 @@ update action model =
                 8706 ->
                     updateNotifications action model
 
+                8224 ->
+                    updateNotifications action model
+
                 174 ->
                     updateLog action model
 
@@ -207,6 +210,9 @@ updateNotifications action model =
             case keycode of
                 8706 ->
                     model ! [ enableDesktopNotifications ]
+
+                8224 ->
+                    model ! [ notify "Testing notifications. Do you hear the bell?" ]
 
                 _ ->
                     model ! []
@@ -409,6 +415,7 @@ viewShortcuts =
         , p [] [ text "Alt+s starts a break." ]
         , p [] [ text "Alt+r resets your log." ]
         , p [] [ text "Alt+d enables desktop notifications." ]
+        , p [] [ text "Alt+t tests your notifications." ]
         ]
 
 

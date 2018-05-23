@@ -19,7 +19,7 @@ App.ports.requestPermissionsPort.subscribe(function(){
 });
 
 App.ports.sendNotificationPort.subscribe(function(message){
-  console.log("triggering notification");
+  console.log("triggering notification:", message);
   new Notification(message);
 });
 

@@ -85,7 +85,6 @@ body, html {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 96px;
   background: white;
   display: flex;
   flex-direction: column;

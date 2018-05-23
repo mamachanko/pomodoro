@@ -576,7 +576,7 @@ onEnter msg =
 
 pomodoroLogNoEntries =
     div [ id "emptyLog" ]
-        [ p [] [ text "This is where you're logged Pomodoros will appear." ]
+        [ p [] [ text "This is where your logged Pomodoros will appear." ]
         , p [] [ text "Your log is kept on this device and survives reloads." ]
         ]
 
